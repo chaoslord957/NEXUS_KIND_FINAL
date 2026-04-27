@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Task Detail</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh}
+
+/* Topbar */
+.topbar{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;height:68px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.logo-icon{font-size:1.5rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-text{font-size:1.1rem;font-weight:800;color:var(--text)}
+.topbar-mid{flex:1;display:flex;align-items:center;padding-left:1rem}
+.back-btn{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.88rem;font-weight:600;cursor:pointer;padding:.45rem .9rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);transition:all .2s;text-decoration:none}
+.back-btn:hover{color:var(--bg1);border-color:var(--bg1);background:rgba(168,34,34,.04)}
+.topbar-right{display:flex;align-items:center;gap:.75rem;margin-left:auto}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+
+/* Layout */
+.detail-wrap{max-width:1100px;margin:0 auto;padding:2.5rem 2rem;display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start}
+@media(max-width:900px){.detail-wrap{grid-template-columns:1fr;padding:1.5rem 1rem}}
+
+/* Hero Image */
+.task-hero{border-radius:22px;overflow:hidden;margin-bottom:1.8rem;position:relative;height:320px;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%)}
+.task-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 55%)}
+.hero-badges{position:absolute;top:1.2rem;left:1.2rem;display:flex;gap:.5rem}
+.hero-badge{padding:.3rem .8rem;border-radius:8px;font-size:.75rem;font-weight:800;backdrop-filter:blur(10px)}
+.hero-badge.cat{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.hero-badge.urgency{color:#fff;border:1px solid rgba(255,255,255,.25)}
+.hero-badge.urgency.high{background:rgba(231,76,60,.7)}
+.hero-badge.urgency.medium{background:rgba(243,156,18,.7)}
+.hero-badge.urgency.low{background:rgba(39,174,96,.7)}
+.hero-bottom{position:absolute;bottom:1.2rem;left:1.2rem;right:1.2rem}
+.hero-title{font-size:1.5rem;font-weight:800;color:#fff;line-height:1.3;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+
+/* Card */
+.detail-card{background:var(--card);border-radius:22px;border:1px solid var(--border);box-shadow:0 2px 16px rgba(0,0,0,.06);overflow:hidden;margin-bottom:1.5rem}
+.detail-card-header{padding:1.2rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem}
+.detail-card-header i{color:var(--bg1);font-size:1rem}
+.detail-card-header h3{font-size:1rem;font-weight:800;color:var(--text);margin:0}
+.detail-card-body{padding:1.4rem 1.6rem}
+
+/* NGO Info */
+.ngo-profile{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem}
+.ngo-avatar-lg{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.1rem;flex-shrink:0}
+.ngo-meta-name{font-size:1.05rem;font-weight:800;color:var(--text)}
+.ngo-meta-type{font-size:.8rem;color:var(--muted);margin:.1rem 0}
+.ngo-verified{font-size:.73rem;color:#27ae60;font-weight:700}
+.ngo-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.ngo-stat{text-align:center}
+.ngo-stat-val{font-size:1.2rem;font-weight:800;color:var(--text)}
+.ngo-stat-lbl{font-size:.68rem;color:var(--muted);font-weight:500}
+
+/* Description */
+.task-description{font-size:.95rem;color:var(--text);line-height:1.7;margin-bottom:1.2rem}
+.task-description p{margin-bottom:.8rem}
+
+/* Photos Grid */
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.photo-thumb{height:100px;border-radius:12px;object-fit:cover;width:100%;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,rgba(168,34,34,.12),rgba(118,75,162,.12))}
+.photo-thumb:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.photo-placeholder{height:100px;border-radius:12px;background:linear-gradient(135deg,rgba(168,34,34,.08),rgba(118,75,162,.08));display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.5rem}
+
+/* AI Summary */
+.ai-summary-box{background:linear-gradient(135deg,rgba(168,34,34,.06),rgba(118,75,162,.06));border:1.5px solid rgba(168,34,34,.15);border-radius:16px;padding:1.3rem 1.4rem;position:relative;overflow:hidden}
+.ai-summary-box::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:linear-gradient(135deg,var(--bg1),var(--bg2));border-radius:50%;opacity:.06}
+.ai-badge{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-size:.72rem;font-weight:800;padding:.25rem .7rem;border-radius:20px;margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.04em}
+.ai-summary-text{font-size:.9rem;color:var(--text);line-height:1.7}
+.ai-loading{display:flex;align-items:center;gap:.7rem;color:var(--muted);font-size:.88rem}
+.ai-spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--bg1);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Requirements */
+.req-list{list-style:none;padding:0}
+.req-list li{display:flex;align-items:flex-start;gap:.7rem;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.88rem;color:var(--text)}
+.req-list li:last-child{border-bottom:none}
+.req-list li i{color:var(--bg1);font-size:.85rem;margin-top:.15rem;flex-shrink:0;width:16px}
+
+/* Keywords */
+.kw-cloud{display:flex;flex-wrap:wrap;gap:.4rem}
+.kw-tag{padding:.3rem .8rem;border-radius:20px;font-size:.75rem;font-weight:700;border:1.5px solid var(--border);background:var(--body-bg);color:var(--muted)}
+.kw-tag.primary-kw{background:rgba(168,34,34,.08);color:var(--bg1);border-color:rgba(168,34,34,.2)}
+
+/* Sidebar sticky cards */
+.sidebar-sticky{position:sticky;top:90px}
+
+/* Apply Card */
+.apply-card{background:var(--card);border-radius:22px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;margin-bottom:1.5rem}
+.apply-card-header{padding:1.3rem 1.6rem;border-bottom:1px solid var(--border)}
+.apply-card-title{font-size:1rem;font-weight:800;color:var(--text)}
+.apply-card-body{padding:1.4rem 1.6rem}
+
+/* Req Grid */
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.4rem}
+.req-item{display:flex;flex-direction:column;gap:.2rem;background:var(--body-bg);border-radius:12px;padding:.9rem 1rem}
+.req-item-icon{font-size:.9rem;color:var(--bg1);margin-bottom:.15rem}
+.req-item-val{font-size:.95rem;font-weight:800;color:var(--text)}
+.req-item-lbl{font-size:.68rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+
+/* Apply Button */
+.apply-main-btn{width:100%;padding:1rem;border:none;border-radius:13px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:800;font-size:1rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.8rem}
+.apply-main-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(168,34,34,.3)}
+.save-btn{width:100%;padding:.75rem;border:2px solid var(--border);border-radius:13px;background:var(--card);color:var(--text);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.save-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.04)}
+.save-btn.saved{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+
+.share-row{display:flex;gap:.5rem;margin-top:1rem}
+.share-btn{flex:1;padding:.55rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:.85rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.35rem;font-weight:600}
+.share-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+
+/* Urgency timeline */
+.urgency-meter{margin-bottom:1.4rem}
+.urgency-label-row{display:flex;justify-content:space-between;margin-bottom:.35rem}
+.urgency-bar{height:8px;background:var(--border);border-radius:8px;overflow:hidden}
+.urgency-fill{height:100%;border-radius:8px;transition:width 1s ease}
+.urgency-fill.high{width:90%;background:linear-gradient(90deg,#e74c3c,#c0392b)}
+.urgency-fill.medium{width:55%;background:linear-gradient(90deg,#f39c12,#e67e22)}
+.urgency-fill.low{width:20%;background:linear-gradient(90deg,#27ae60,#2ecc71)}
+
+/* Lightbox */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.lightbox.show{display:flex}
+.lightbox img{max-width:90vw;max-height:85vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lightbox-close{position:absolute;top:1.5rem;right:1.5rem;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lightbox-close:hover{background:rgba(255,255,255,.25)}
+
+/* Alert */
+#alertBanner{display:none;position:fixed;bottom:2rem;right:2rem;padding:.8rem 1.4rem;border-radius:12px;font-size:.88rem;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.15);animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <a class="topbar-logo" href="user_dashboard.html">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div class="logo-text">NexusKind</div>
+  </a>
+  <div class="topbar-mid">
+    <a class="back-btn" href="user_dashboard.html">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
+    <div class="icon-btn" onclick="window.location.href='user_dashboard.html'"><i class="fas fa-user-circle"></i></div>
+  </div>
+</header>
+
+<!-- Detail Wrap -->
+<div class="detail-wrap">
+
+  <!-- Left Column -->
+  <div>
+    <!-- Hero Image -->
+    <div class="task-hero" id="taskHero">
+      <div class="hero-overlay"></div>
+      <div class="hero-badges">
+        <span class="hero-badge cat" id="heroCat">Category</span>
+        <span class="hero-badge urgency" id="heroUrgency">Urgent</span>
+      </div>
+      <div class="hero-bottom">
+        <div class="hero-title" id="heroTitle">Task Title</div>
+      </div>
+    </div>
+
+    <!-- NGO Info -->
+    <div class="detail-card">
+      <div class="detail-card-header"><i class="fas fa-building"></i><h3>Posted by NGO</h3></div>
+      <div class="detail-card-body">
+        <div class="ngo-profile">
+          <div class="ngo-avatar-lg" id="ngoAvatarLg">NK</div>
+          <div>
+            <div class="ngo-meta-name" id="ngoName">NGO Name</div>
+            <div class="ngo-meta-type">Verified Non-Profit Organization</div>
+            <div class="ngo-verified"><i class="fas fa-check-circle"></i> Verified & Registered</div>
+          </div>
+        </div>
+        <div class="ngo-stats">
+          <div class="ngo-stat"><div class="ngo-stat-val">142</div><div class="ngo-stat-lbl">Volunteers</div></div>
+          <div class="ngo-stat"><div class="ngo-stat-val">38</div><div class="ngo-stat-lbl">Tasks Posted</div></div>
+          <div class="ngo-stat"><div class="ngo-stat-val">4.8★</div><div class="ngo-stat-lbl">Rating</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Description -->
+    <div class="detail-card">
+      <div class="detail-card-header"><i class="fas fa-align-left"></i><h3>Task Description</h3></div>
+      <div class="detail-card-body">
+        <div class="task-description" id="taskDescription">Loading...</div>
+        <div class="kw-cloud" id="kwCloud"></div>
+      </div>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="detail-card">
+      <div class="detail-card-header"><i class="fas fa-images"></i><h3>Gallery</h3></div>
+      <div class="detail-card-body">
+        <div class="photos-grid" id="photosGrid"></div>
+      </div>
+    </div>
+
+    <!-- Requirements -->
+    <div class="detail-card">
+      <div class="detail-card-header"><i class="fas fa-list-check"></i><h3>Volunteer Requirements</h3></div>
+      <div class="detail-card-body">
+        <ul class="req-list" id="reqList"></ul>
+      </div>
+    </div>
+
+    <!-- AI Summary -->
+    <div class="detail-card">
+      <div class="detail-card-header"><i class="fas fa-robot"></i><h3>AI Summary</h3></div>
+      <div class="detail-card-body">
+        <div class="ai-summary-box">
+          <div class="ai-badge"><i class="fas fa-sparkles"></i> Powered by Claude AI</div>
+          <div id="aiSummaryContent">
+            <div class="ai-loading">
+              <div class="ai-spinner"></div>
+              Generating AI summary…
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="sidebar-sticky">
+    <!-- Apply Card -->
+    <div class="apply-card">
+      <div class="apply-card-header">
+        <div class="apply-card-title">Task Requirements</div>
+      </div>
+      <div class="apply-card-body">
+        <!-- Urgency Meter -->
+        <div class="urgency-meter">
+          <div class="urgency-label-row">
+            <span style="font-size:.8rem;font-weight:700;color:var(--text)">Urgency Level</span>
+            <span style="font-size:.8rem;font-weight:700" id="urgencyText">High</span>
+          </div>
+          <div class="urgency-bar"><div class="urgency-fill" id="urgencyFill"></div></div>
+        </div>
+
+        <!-- Req Grid -->
+        <div class="req-grid">
+          <div class="req-item">
+            <div class="req-item-icon"><i class="fas fa-clock"></i></div>
+            <div class="req-item-val" id="reqTime">—</div>
+            <div class="req-item-lbl">Time Required</div>
+          </div>
+          <div class="req-item">
+            <div class="req-item-icon"><i class="fas fa-users"></i></div>
+            <div class="req-item-val" id="reqVolunteers">—</div>
+            <div class="req-item-lbl">Volunteers Needed</div>
+          </div>
+          <div class="req-item">
+            <div class="req-item-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="req-item-val" id="reqDistance">—</div>
+            <div class="req-item-lbl">Distance</div>
+          </div>
+          <div class="req-item">
+            <div class="req-item-icon"><i class="fas fa-calendar"></i></div>
+            <div class="req-item-val" id="reqPosted">—</div>
+            <div class="req-item-lbl">Posted</div>
+          </div>
+        </div>
+
+        <button class="apply-main-btn" id="applyBtn" onclick="applyTask()">
+          <i class="fas fa-paper-plane"></i> Apply to Volunteer
+        </button>
+        <button class="save-btn" id="saveBtn" onclick="toggleSave()">
+          <i class="fas fa-bookmark"></i> Save for Later
+        </button>
+
+        <div class="share-row">
+          <button class="share-btn" onclick="shareTask('whatsapp')"><i class="fab fa-whatsapp"></i> Share</button>
+          <button class="share-btn" onclick="copyLink()"><i class="fas fa-link"></i> Copy Link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Card -->
+    <div class="apply-card">
+      <div class="apply-card-header"><div class="apply-card-title">Contact NGO</div></div>
+      <div class="apply-card-body" style="display:flex;flex-direction:column;gap:.7rem">
+        <button class="save-btn" onclick="showAlert('Contact feature coming soon!','info')">
+          <i class="fas fa-envelope"></i> Send Message
+        </button>
+        <button class="save-btn" onclick="showAlert('Phone contact feature coming soon!','info')">
+          <i class="fas fa-phone"></i> Call NGO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close"><i class="fas fa-times"></i></button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div id="alertBanner"></div>
+
+<script>
+// ── Load Task from sessionStorage ──────────────────────────────────────
+const TASK_EXTRA = {
+  1: {
+    description: `<p>The recent floods in Belgharia have displaced hundreds of families, leaving them without access to basic necessities. Asha Foundation is organizing a large-scale <strong>Flood Relief Distribution Drive</strong> to bring immediate relief to affected communities.</p>
+    <p>Volunteers will help sort, pack, and distribute food packets, clean drinking water pouches, and hygiene kits to registered families at distribution points. The task requires physical stamina and a willingness to work in a team environment.</p>
+    <p>All materials and transport will be arranged by the NGO. Volunteers are expected to report at the base camp by 7:00 AM each day.</p>`,
+    requirements: ['Physical fitness and ability to carry loads up to 10kg','Age 18 and above','Comfortable with outdoor work in humid conditions','Ability to communicate in Bengali or Hindi preferred','Own drinking water and personal protection recommended'],
+    photos: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&h=300&fit=crop']
+  },
+  2: {
+    description: `<p>MedCare NGO is organizing a <strong>Free Health Screening Camp</strong> for residents of underprivileged areas, focusing on Blood Pressure and Diabetes detection — two of the most prevalent but often undiagnosed conditions.</p>
+    <p>Volunteers will assist the medical team with patient registration, queue management, form filling, and post-screening guidance. Volunteers with any healthcare background are especially encouraged to apply.</p>
+    <p>All medical equipment and consumables are provided by the NGO. The camp will be held at the Noapara Community Hall.</p>`,
+    requirements: ['Basic communication skills in Bengali','Comfortable around medical environments','Healthcare background preferred but not mandatory','Age 18+','Punctuality is essential — volunteers must arrive 30 mins before camp starts'],
+    photos: ['https://images.unsplash.com/photo-1584515933487-779824d29309?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop']
+  },
+  3: {
+    description: `<p>BrightFuture Trust is running a weekend English tutoring program for underprivileged children aged 8–14. The aim is to improve conversational English skills, boosting children's confidence for future opportunities.</p>
+    <p>Volunteers will be paired with groups of 5–8 students and given a flexible curriculum to work with. The sessions focus on spoken English, storytelling, and basic grammar through fun activities.</p>
+    <p>The community center is well-equipped with chairs, boards, and basic teaching materials. No formal teaching degree required — just enthusiasm and patience!</p>`,
+    requirements: ['Proficiency in English (spoken and written)','Patience and ability to connect with children','Commitment to weekly sessions (minimum 4 weeks)','Prior teaching or tutoring experience is a bonus','Friendly, energetic personality'],
+    photos: ['https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400&h=300&fit=crop']
+  },
+  default: {
+    description: `<p>This is an exciting volunteer opportunity with a verified NGO. The task involves community service activities that make a direct, meaningful impact on the lives of beneficiaries.</p>
+    <p>Volunteers will work alongside dedicated NGO staff and fellow volunteers to complete assigned activities. All necessary materials and guidance will be provided by the organizing NGO.</p>
+    <p>Join us to be part of something bigger — every hour you contribute makes a real difference in someone's life.</p>`,
+    requirements: ['Willing to volunteer with dedication','Team player with good communication skills','Age 18 and above','Physically fit for the assigned tasks','Commit to the required hours'],
+    photos: ['https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop','https://images.unsplash.com/photo-1593113598332-cd288d649433?w=400&h=300&fit=crop']
+  }
+};
+
+let task = null;
+let saved = false;
+
+window.addEventListener('DOMContentLoaded', () => {
+  if(sessionStorage.getItem('theme') === 'dark'){
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('themeIcon').className = 'fas fa-sun';
+  }
+
+  try{ task = JSON.parse(sessionStorage.getItem('currentTask')); }catch(e){}
+  if(!task){ window.location.href = 'user_dashboard.html'; return; }
+
+  populatePage(task);
+  generateAISummary(task);
+});
+
+function populatePage(t){
+  document.title = `NexusKind — ${t.title}`;
+
+  // Hero
+  const heroEl = document.getElementById('taskHero');
+  const extra = TASK_EXTRA[t.id] || TASK_EXTRA.default;
+  if(extra.photos && extra.photos[0]){
+    heroEl.style.backgroundImage = `url('${extra.photos[0]}')`;
+    heroEl.style.backgroundSize = 'cover';
+    heroEl.style.backgroundPosition = 'center';
+  }
+  document.getElementById('heroCat').textContent = t.category;
+  const ub = document.getElementById('heroUrgency');
+  ub.textContent = t.urgency === 'high' ? '🔴 Urgent' : t.urgency === 'medium' ? '🟡 Moderate' : '🟢 Low Priority';
+  ub.className = `hero-badge urgency ${t.urgency}`;
+  document.getElementById('heroTitle').textContent = t.title;
+
+  // NGO
+  document.getElementById('ngoAvatarLg').textContent = t.ngoInit;
+  document.getElementById('ngoName').textContent = t.ngo;
+
+  // Description
+  document.getElementById('taskDescription').innerHTML = extra.description;
+
+  // Keywords
+  document.getElementById('kwCloud').innerHTML = t.keywords.map((k,i) =>
+    `<span class="kw-tag${i===0?' primary-kw':''}">${k}</span>`
+  ).join('');
+
+  // Requirements
+  document.getElementById('reqList').innerHTML = extra.requirements.map(r =>
+    `<li><i class="fas fa-check-circle"></i>${r}</li>`
+  ).join('');
+
+  // Photos
+  document.getElementById('photosGrid').innerHTML = extra.photos.map(p =>
+    `<img class="photo-thumb" src="${p}" alt="Task photo" onclick="openLightbox('${p}')">`
+  ).join('');
+
+  // Sidebar
+  document.getElementById('reqTime').textContent = t.timeRequired;
+  document.getElementById('reqVolunteers').textContent = `${t.volunteers} needed`;
+  document.getElementById('reqDistance').textContent = t.distance;
+  document.getElementById('reqPosted').textContent = t.posted;
+
+  // Urgency
+  const urgText = t.urgency === 'high' ? 'High — Act Now' : t.urgency === 'medium' ? 'Moderate' : 'Low Priority';
+  document.getElementById('urgencyText').textContent = urgText;
+  document.getElementById('urgencyText').style.color = t.urgency === 'high' ? '#e74c3c' : t.urgency === 'medium' ? '#f39c12' : '#27ae60';
+  const fill = document.getElementById('urgencyFill');
+  fill.className = `urgency-fill ${t.urgency}`;
+}
+
+// ── AI Summary via Claude ─────────────────────────────────────────────────
+async function generateAISummary(t){
+  const extra = TASK_EXTRA[t.id] || TASK_EXTRA.default;
+  const prompt = `You are a helpful assistant for NexusKind, a volunteer platform. Write a concise, motivating 3-4 sentence summary for a volunteer opportunity. Make it warm and actionable.
+
+Task Title: ${t.title}
+NGO: ${t.ngo}
+Category: ${t.category}
+Urgency: ${t.urgency}
+Time Required: ${t.timeRequired}
+Volunteers Needed: ${t.volunteers}
+Distance: ${t.distance}
+Description: ${extra.description.replace(/<[^>]+>/g,'')}
+Keywords: ${t.keywords.join(', ')}
+
+Write a compelling summary that tells volunteers: what the task is, why it matters, what they'll do, and what makes this opportunity special. Keep it under 80 words. Be warm and encouraging.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    if(text){
+      document.getElementById('aiSummaryContent').innerHTML = `<div class="ai-summary-text">${text}</div>`;
+    } else {
+      throw new Error('No content');
+    }
+  } catch(err) {
+    // Fallback
+    const fallback = `${t.ngo} is calling volunteers for this ${t.urgency === 'high' ? 'urgent' : 'important'} ${t.category.toLowerCase()} task — <em>${t.title}</em>. Your ${t.timeRequired} of service will directly support ${t.volunteers} volunteer spots and create lasting impact in the community. Join like-minded changemakers and make your contribution count!`;
+    document.getElementById('aiSummaryContent').innerHTML = `<div class="ai-summary-text">${fallback}</div>`;
+  }
+}
+
+// ── Interactions ──────────────────────────────────────────────────────────
+function applyTask(){
+  const btn = document.getElementById('applyBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  setTimeout(() => {
+    btn.innerHTML = '<i class="fas fa-check"></i> Application Sent!';
+    btn.style.background = 'linear-gradient(135deg,#27ae60,#2ecc71)';
+    showAlert('🎉 Application submitted successfully! The NGO will contact you shortly.','success');
+  }, 1500);
+}
+
+function toggleSave(){
+  saved = !saved;
+  const btn = document.getElementById('saveBtn');
+  btn.innerHTML = saved ? '<i class="fas fa-bookmark"></i> Saved!' : '<i class="fas fa-bookmark"></i> Save for Later';
+  if(saved) btn.classList.add('saved'); else btn.classList.remove('saved');
+  showAlert(saved ? 'Task saved to your list!':'Task removed from saved.', 'info');
+}
+
+function shareTask(){
+  const text = encodeURIComponent(`Check out this volunteer opportunity: ${task?.title} by ${task?.ngo} on NexusKind!`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    showAlert('Link copied to clipboard!','success');
+  }).catch(() => showAlert('Could not copy link.','error'));
+}
+
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+function toggleTheme(){
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  sessionStorage.setItem('theme', dark ? 'light' : 'dark');
+  document.getElementById('themeIcon').className = dark ? 'fas fa-moon' : 'fas fa-sun';
+}
+
+function showAlert(msg, type){
+  const el = document.getElementById('alertBanner');
+  el.style.display = 'block';
+  el.style.background = type === 'success' ? 'rgba(39,174,96,.95)' : type === 'error' ? 'rgba(192,57,43,.95)' : 'rgba(41,128,185,.95)';
+  el.style.color = '#fff';
+  el.style.border = 'none';
+  el.innerHTML = msg;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 3500);
+}
+</script>
+</body>
+</html>

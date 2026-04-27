@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Members</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--sidebar:#fff;--sidebar-w:260px;--topbar-h:68px;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--sidebar:#0f1f3d;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.07);transition:transform .3s}
+.sidebar-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem}
+.sidebar-logo .logo-icon{font-size:1.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo h2{font-size:1.25rem;font-weight:800;color:var(--text)}
+.sidebar-logo p{font-size:.68rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sidebar-nav{flex:1;padding:1.2rem 0;overflow-y:auto}
+.nav-section{padding:.4rem 1.5rem .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.5rem;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;border-left:3px solid transparent;transition:all .2s;cursor:pointer}
+.nav-item:hover{background:rgba(168,34,34,.06);color:var(--bg1);border-left-color:rgba(168,34,34,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(168,34,34,.12),rgba(118,75,162,.06));color:var(--bg1);border-left-color:var(--bg1)}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.sidebar-bottom{padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.ngo-profile-mini{display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:12px;cursor:pointer;transition:background .2s}
+.ngo-profile-mini:hover{background:rgba(168,34,34,.06)}
+.ngo-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem;flex-shrink:0}
+.ngo-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.ngo-role{font-size:.72rem;color:var(--muted)}
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-left{flex:1;display:flex;align-items:center;gap:1rem}
+.page-title{font-size:1.2rem;font-weight:800;color:var(--text)}
+.page-subtitle{font-size:.8rem;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem;text-decoration:none;position:relative}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2rem;min-height:calc(100vh - var(--topbar-h))}
+/* Tabs */
+.page-tabs{display:flex;gap:.5rem;margin-bottom:2rem;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:.4rem}
+.page-tab{flex:1;padding:.65rem 1rem;border:none;background:transparent;color:var(--muted);font-weight:600;font-size:.88rem;border-radius:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.page-tab.active{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;box-shadow:0 4px 14px rgba(168,34,34,.25)}
+.tab-badge{background:rgba(255,255,255,.3);color:#fff;font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:20px;min-width:18px;text-align:center}
+.page-tab:not(.active) .tab-badge{background:var(--bg1);color:#fff}
+/* Role section */
+.role-section{margin-bottom:2rem}
+.role-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:.75rem;border-bottom:2px solid var(--border)}
+.role-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.role-icon.admin{background:linear-gradient(135deg,var(--bg1),#c0392b);color:#fff}
+.role-icon.volunteer{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff}
+.role-icon.donor{background:linear-gradient(135deg,#2980b9,#3498db);color:#fff}
+.role-title{font-size:1.05rem;font-weight:800;color:var(--text)}
+.role-count{font-size:.75rem;color:var(--muted);font-weight:600}
+.role-badge-pill{font-size:.72rem;font-weight:700;padding:.25rem .75rem;border-radius:20px;margin-left:auto}
+.role-badge-pill.admin{background:rgba(168,34,34,.1);color:var(--bg1)}
+.role-badge-pill.volunteer{background:rgba(39,174,96,.1);color:#27ae60}
+.role-badge-pill.donor{background:rgba(41,128,185,.1);color:#2980b9}
+/* Members Grid */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.member-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .25s;cursor:pointer}
+.member-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.1);border-color:var(--bg1)}
+.mc-top{padding:1.3rem 1.3rem .8rem;display:flex;align-items:flex-start;gap:.85rem}
+.mc-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.mc-avatar.volunteer{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.mc-avatar.admin{background:linear-gradient(135deg,var(--bg1),#c0392b)}
+.mc-name{font-size:.97rem;font-weight:700;color:var(--text);line-height:1.2}
+.mc-username{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+.mc-role-badge{font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;margin-left:auto;flex-shrink:0}
+.mc-role-badge.volunteer{background:rgba(39,174,96,.1);color:#27ae60}
+.mc-role-badge.admin{background:rgba(168,34,34,.1);color:var(--bg1)}
+.mc-divider{height:1px;background:var(--border);margin:0 1.3rem}
+.mc-bottom{padding:.8rem 1.3rem;display:flex;flex-direction:column;gap:.35rem}
+.mc-field{display:flex;align-items:center;gap:.55rem;font-size:.8rem;color:var(--muted)}
+.mc-field i{width:14px;text-align:center;color:var(--bg1);font-size:.75rem}
+.mc-field span{color:var(--text);font-weight:500}
+.mc-footer{padding:.7rem 1.3rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:rgba(0,0,0,.01)}
+.mc-action{flex:1;padding:.45rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.mc-action:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.05)}
+.mc-action.danger:hover{border-color:#e74c3c;color:#e74c3c;background:rgba(231,76,60,.05)}
+/* Requests list */
+.requests-list{display:flex;flex-direction:column;gap:.85rem}
+.req-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:1.2rem 1.4rem;display:flex;align-items:flex-start;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.04);transition:all .2s}
+.req-card:hover{border-color:var(--bg1);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.req-avatar{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.95rem;flex-shrink:0}
+.req-info{flex:1;min-width:0}
+.req-name{font-weight:700;font-size:.95rem;color:var(--text)}
+.req-meta{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.req-msg{font-size:.82rem;color:var(--text);margin-top:.5rem;padding:.5rem .75rem;background:var(--body-bg);border-radius:8px;border-left:3px solid var(--bg1);font-style:italic}
+.req-actions{display:flex;gap:.5rem;margin-top:.75rem}
+.req-btn{padding:.45rem 1rem;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.req-btn.accept{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff}
+.req-btn.accept:hover{opacity:.88;transform:translateY(-1px)}
+.req-btn.reject{background:transparent;border:1.5px solid #e74c3c;color:#e74c3c}
+.req-btn.reject:hover{background:#e74c3c;color:#fff}
+.req-date{font-size:.72rem;color:var(--muted);white-space:nowrap;margin-top:.2rem}
+/* Stats bar */
+.members-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem}
+.ms-card{background:var(--card);border-radius:16px;padding:1.3rem;border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:1rem}
+.ms-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ms-icon.volunteer{background:rgba(39,174,96,.12);color:#27ae60}
+.ms-icon.pending{background:rgba(168,34,34,.12);color:var(--bg1)}
+.ms-icon.total{background:rgba(118,75,162,.12);color:var(--bg2)}
+.ms-val{font-size:1.8rem;font-weight:800;color:var(--text);line-height:1}
+.ms-label{font-size:.78rem;color:var(--muted);font-weight:500;margin-top:.15rem}
+/* Controls */
+.controls-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.55rem 1rem;flex:1;min-width:200px}
+.search-box input{border:none;background:transparent;color:var(--text);font-size:.88rem;outline:none;width:100%}
+.filter-select{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:.85rem;outline:none;cursor:pointer}
+/* Empty */
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--muted)}
+.empty-state i{font-size:2.5rem;margin-bottom:.8rem;opacity:.4;display:block}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border-radius:22px;padding:2rem;max-width:480px;width:90%;box-shadow:0 24px 70px rgba(0,0,0,.22);animation:fadeUp .25s ease;max-height:90vh;overflow-y:auto}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.modal-title{font-size:1.05rem;font-weight:800;color:var(--text)}
+.modal-close{border:none;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:rgba(168,34,34,.08);color:var(--bg1)}
+.detail-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;margin-top:.9rem}
+.detail-value{font-size:.9rem;color:var(--text);font-weight:500}
+.alert-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.2rem;font-size:.88rem;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:99999;display:none}
+@media(max-width:900px){.members-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.members-stats{grid-template-columns:1fr}.members-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main,.topbar{margin-left:0}}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+.hamburger{display:none;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text)}
+@media(max-width:768px){.hamburger{display:flex}}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div><h2>NexusKind</h2><p>NGO Portal</p></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-item" href="ngo_dashboard_2.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <div class="nav-section">Operations</div>
+    <a class="nav-item" href="ngo_tasks_2.html"><i class="fas fa-tasks"></i> Tasks</a>
+    <div class="nav-item active"><i class="fas fa-users"></i> Members</div>
+    <div class="nav-item" onclick="toast('Donations module coming soon!','info')"><i class="fas fa-hand-holding-heart"></i> Donations</div>
+    <div class="nav-item" onclick="toast('Reports module coming soon!','info')"><i class="fas fa-chart-bar"></i> Reports</div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" onclick="toast('Profile coming soon!','info')"><i class="fas fa-user-circle"></i> Profile</div>
+    <div class="nav-item" onclick="toast('Settings coming soon!','info')"><i class="fas fa-cog"></i> Settings</div>
+    <div class="nav-item" onclick="logout()" style="color:#c0392b"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="ngo-profile-mini">
+      <div class="ngo-avatar" id="avatarInitials">NK</div>
+      <div><div class="ngo-name" id="ngoDisplayName">My NGO</div><div class="ngo-role">Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <button class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="topbar-left">
+    <div>
+      <div class="page-title">Members</div>
+      <div class="page-subtitle">Manage volunteers and incoming join requests</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></div>
+    <a class="icon-btn" href="ngo_dashboard_2.html" title="Dashboard"><i class="fas fa-th-large"></i></a>
+    <div class="icon-btn" onclick="toast('Settings coming soon!','info')"><i class="fas fa-cog"></i></div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- Stats bar -->
+  <div class="members-stats">
+    <div class="ms-card">
+      <div class="ms-icon volunteer"><i class="fas fa-hands-helping"></i></div>
+      <div><div class="ms-val" id="cntVolunteer">—</div><div class="ms-label">Total Volunteers</div></div>
+    </div>
+    <div class="ms-card">
+      <div class="ms-icon pending"><i class="fas fa-clock"></i></div>
+      <div><div class="ms-val" id="cntPending">—</div><div class="ms-label">Pending Requests</div></div>
+    </div>
+    <div class="ms-card">
+      <div class="ms-icon total"><i class="fas fa-user-check"></i></div>
+      <div><div class="ms-val" id="cntTotal">—</div><div class="ms-label">Tasks Assigned</div></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="page-tabs">
+    <button class="page-tab active" id="tabMembers" onclick="switchTab('members')">
+      <i class="fas fa-users"></i> Members
+    </button>
+    <button class="page-tab" id="tabRequests" onclick="switchTab('requests')">
+      <i class="fas fa-user-plus"></i> Join Requests
+      <span class="tab-badge" id="pendingBadge" style="display:none">0</span>
+    </button>
+  </div>
+
+  <!-- Members panel -->
+  <div id="panelMembers">
+    <div class="controls-bar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search by name, email, location..." oninput="filterMembers()">
+      </div>
+      <select class="filter-select" id="sortFilter" onchange="filterMembers()">
+        <option value="name">Sort: Name</option>
+        <option value="joined">Sort: Joined</option>
+        <option value="tasks">Sort: Tasks</option>
+      </select>
+    </div>
+    <div id="membersContent">
+      <div style="text-align:center;padding:4rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><div style="margin-top:1rem">Loading members…</div></div>
+    </div>
+  </div>
+
+  <!-- Requests panel -->
+  <div id="panelRequests" style="display:none">
+    <div id="requestsContent">
+      <div style="text-align:center;padding:4rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><div style="margin-top:1rem">Loading requests…</div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Member Detail Modal -->
+<div class="modal-overlay" id="memberModal" onclick="closeModalOutside(event,'memberModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-user-circle" style="color:var(--bg1);margin-right:.5rem"></i>Member Profile</div>
+      <button class="modal-close" onclick="closeModal('memberModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="memberDetailContent"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1.2rem">
+      <button onclick="closeModal('memberModal')" style="flex:1;padding:.75rem;border:2px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font-weight:700;cursor:pointer">Close</button>
+      <button id="removeMemberBtn" style="flex:1;padding:.75rem;border:none;border-radius:11px;background:#e74c3c;color:#fff;font-weight:700;cursor:pointer"><i class="fas fa-user-minus" style="margin-right:.4rem"></i>Remove</button>
+    </div>
+  </div>
+</div>
+
+<div class="alert-toast" id="alertToast"></div>
+
+<script>
+const COMM_URL = 'https://nexus-kind-community.onrender.com/api/community';
+let allMembers      = [];
+let pendingRequests = [];
+let viewingMember   = null;
+let activeTab       = 'members';
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('themeIcon').className = 'fas fa-sun';
+  }
+  const token = sessionStorage.getItem('token');
+  if (!token) { window.location.href = 'login_2.html'; return; }
+  try {
+    const u = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const n = u.organizationName || u.username || 'My NGO';
+    document.getElementById('ngoDisplayName').textContent = n;
+    document.getElementById('avatarInitials').textContent = n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  } catch(e) {}
+  loadMembers();
+  loadPendingRequests();
+});
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabMembers').classList.toggle('active', tab === 'members');
+  document.getElementById('tabRequests').classList.toggle('active', tab === 'requests');
+  document.getElementById('panelMembers').style.display  = tab === 'members'  ? '' : 'none';
+  document.getElementById('panelRequests').style.display = tab === 'requests' ? '' : 'none';
+}
+
+// ── Load Members ──────────────────────────────────────────────────────────────
+async function loadMembers() {
+  try {
+    const token = sessionStorage.getItem('token') || '';
+    const res = await fetch(`${COMM_URL}/members`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      allMembers = await res.json();
+    } else {
+      allMembers = [];
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || 'Could not load members.', 'error');
+    }
+  } catch(e) {
+    allMembers = [];
+    toast('community_server.js not reachable on port 5003.', 'error');
+  }
+  updateStats();
+  renderMembers();
+}
+
+// ── Load Pending Requests ─────────────────────────────────────────────────────
+async function loadPendingRequests() {
+  try {
+    const token = sessionStorage.getItem('token') || '';
+    const res = await fetch(`${COMM_URL}/membership/requests?status=pending`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      pendingRequests = await res.json();
+    } else {
+      pendingRequests = [];
+    }
+  } catch(e) {
+    pendingRequests = [];
+  }
+  updateStats();
+  renderRequests();
+  // Update badge
+  const badge = document.getElementById('pendingBadge');
+  badge.textContent = pendingRequests.length;
+  badge.style.display = pendingRequests.length > 0 ? 'inline-block' : 'none';
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('cntVolunteer').textContent = allMembers.length;
+  document.getElementById('cntPending').textContent   = pendingRequests.length;
+  const totalTasks = allMembers.reduce((s, m) => s + (m.tasksCompleted || 0), 0);
+  document.getElementById('cntTotal').textContent = totalTasks;
+}
+
+// ── Render Members ────────────────────────────────────────────────────────────
+function filterMembers() {
+  const q    = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortFilter').value;
+  let filtered = allMembers.filter(m => {
+    if (!q) return true;
+    return (m.name||'').toLowerCase().includes(q)
+        || (m.email||'').toLowerCase().includes(q)
+        || (m.location||'').toLowerCase().includes(q);
+  });
+  filtered.sort((a,b) => {
+    if (sort === 'name')   return (a.name||'').localeCompare(b.name||'');
+    if (sort === 'joined') return (b.joined||'').localeCompare(a.joined||'');
+    if (sort === 'tasks')  return (b.tasksCompleted||0) - (a.tasksCompleted||0);
+    return 0;
+  });
+  renderMembers(filtered);
+}
+
+function renderMembers(members = allMembers) {
+  const container = document.getElementById('membersContent');
+  if (!members.length) {
+    container.innerHTML = `<div class="empty-state"><i class="fas fa-users-slash"></i><p>No members yet. Accept join requests to add volunteers.</p></div>`;
+    return;
+  }
+  container.innerHTML = `
+    <div class="role-section">
+      <div class="role-header">
+        <div class="role-icon volunteer"><i class="fas fa-hands-helping"></i></div>
+        <div><div class="role-title">Volunteers</div><div class="role-count">${members.length} member${members.length !== 1 ? 's' : ''}</div></div>
+        <span class="role-badge-pill volunteer">Active</span>
+      </div>
+      <div class="members-grid">${members.map(m => memberCard(m)).join('')}</div>
+    </div>`;
+}
+
+function memberCard(m) {
+  const init = (m.name || '?').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const mid  = m.membershipId || m._id || m.userId;
+  return `<div class="member-card" onclick="openDetail('${mid}')">
+    <div class="mc-top">
+      <div class="mc-avatar volunteer">${init}</div>
+      <div style="flex:1">
+        <div class="mc-name">${esc(m.name || m.username)}</div>
+        <div class="mc-username">@${esc(m.username || '')}</div>
+      </div>
+      <div class="mc-role-badge volunteer">volunteer</div>
+    </div>
+    <div class="mc-divider"></div>
+    <div class="mc-bottom">
+      ${m.email    ? `<div class="mc-field"><i class="fas fa-envelope"></i><span>${esc(m.email)}</span></div>` : ''}
+      ${m.location ? `<div class="mc-field"><i class="fas fa-map-marker-alt"></i><span>${esc(m.location)}</span></div>` : ''}
+      ${m.joined   ? `<div class="mc-field"><i class="fas fa-calendar-alt"></i><span>Joined ${m.joined}</span></div>` : ''}
+      <div class="mc-field"><i class="fas fa-check-circle"></i><span>${m.tasksCompleted||0} tasks applied</span></div>
+    </div>
+    <div class="mc-footer" onclick="event.stopPropagation()">
+      <button class="mc-action" onclick="contactMember('${mid}')"><i class="fas fa-envelope"></i> Message</button>
+      <button class="mc-action" onclick="openDetail('${mid}')"><i class="fas fa-eye"></i> View</button>
+      <button class="mc-action danger" onclick="removeMember('${mid}')"><i class="fas fa-user-minus"></i> Remove</button>
+    </div>
+  </div>`;
+}
+
+function openDetail(mid) {
+  const m = allMembers.find(x => String(x.membershipId||x._id||x.userId) === String(mid));
+  if (!m) return;
+  viewingMember = m;
+  const init = (m.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('memberDetailContent').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)">
+      <div style="width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,#27ae60,#2ecc71);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.4rem;margin-bottom:.8rem">${init}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--text)">${esc(m.name||m.username)}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin:.2rem 0">@${esc(m.username||'')}</div>
+      <span class="mc-role-badge volunteer" style="margin-top:.4rem;font-size:.78rem;padding:.3rem .85rem;border-radius:20px">volunteer</span>
+    </div>
+    <div class="detail-label">Email</div><div class="detail-value">${esc(m.email||'Not set')}</div>
+    <div class="detail-label">Phone</div><div class="detail-value">${esc(m.phone||'Not set')}</div>
+    <div class="detail-label">Location</div><div class="detail-value">${esc(m.location||'Not set')}</div>
+    <div class="detail-label">Member Since</div><div class="detail-value">${esc(m.joined||'Not set')}</div>
+    ${m.skills ? `<div class="detail-label">Skills</div><div class="detail-value">${esc(m.skills)}</div>` : ''}
+    <div class="detail-label">Tasks Applied</div><div class="detail-value">${m.tasksCompleted||0}</div>
+  `;
+  const removeBtn = document.getElementById('removeMemberBtn');
+  removeBtn.onclick = () => removeMember(String(m.membershipId||m._id||m.userId));
+  document.getElementById('memberModal').classList.add('show');
+}
+
+function contactMember(mid) {
+  const m = allMembers.find(x => String(x.membershipId||x._id||x.userId) === String(mid));
+  if (m?.email) window.open(`mailto:${m.email}`);
+  else toast('No email found for this member.', 'info');
+}
+
+async function removeMember(mid) {
+  const m = allMembers.find(x => String(x.membershipId||x._id||x.userId) === String(mid));
+  if (!m) return;
+  if (!confirm(`Remove ${m.name} from the organization? They will need to re-apply to rejoin.`)) return;
+  const membershipId = m.membershipId || m._id;
+  try {
+    const token = sessionStorage.getItem('token') || '';
+    const res = await fetch(`${COMM_URL}/membership/${membershipId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      allMembers = allMembers.filter(x => String(x.membershipId||x._id||x.userId) !== String(mid));
+      closeModal('memberModal');
+      updateStats();
+      renderMembers();
+      toast(`${m.name} removed from organization.`, 'info');
+    } else {
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || 'Could not remove member.', 'error');
+    }
+  } catch(e) {
+    toast('Server error. Is community_server.js running?', 'error');
+  }
+}
+
+// ── Render Requests ───────────────────────────────────────────────────────────
+function renderRequests() {
+  const container = document.getElementById('requestsContent');
+  if (!pendingRequests.length) {
+    container.innerHTML = `<div class="empty-state"><i class="fas fa-user-clock"></i><p>No pending join requests.</p><small>When volunteers send a request to join your NGO, they'll appear here.</small></div>`;
+    return;
+  }
+  container.innerHTML = `<div class="requests-list">${pendingRequests.map(r => requestCard(r)).join('')}</div>`;
+}
+
+function requestCard(r) {
+  const u    = r.user || {};
+  const name = u.fullName || u.username || 'Unknown User';
+  const init = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
+  return `<div class="req-card" id="req-${r._id}">
+    <div class="req-avatar">${init}</div>
+    <div class="req-info">
+      <div class="req-name">${esc(name)}</div>
+      <div class="req-meta">
+        @${esc(u.username||'')}
+        ${u.location ? ` · ${esc(u.location)}` : ''}
+        ${u.skills   ? ` · Skills: ${esc(u.skills)}` : ''}
+      </div>
+      ${r.message ? `<div class="req-msg">"${esc(r.message)}"</div>` : ''}
+      <div class="req-actions">
+        <button class="req-btn accept" onclick="acceptRequest('${r._id}')"><i class="fas fa-check" style="margin-right:.3rem"></i>Accept</button>
+        <button class="req-btn reject" onclick="rejectRequest('${r._id}')"><i class="fas fa-times" style="margin-right:.3rem"></i>Decline</button>
+      </div>
+    </div>
+    <div class="req-date">${date}</div>
+  </div>`;
+}
+
+async function acceptRequest(id) {
+  const btn = document.querySelector(`#req-${id} .req-btn.accept`);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+  try {
+    const token = sessionStorage.getItem('token') || '';
+    const res = await fetch(`${COMM_URL}/membership/${id}/accept`, {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      pendingRequests = pendingRequests.filter(r => r._id !== id);
+      toast('Volunteer accepted as member!', 'success');
+      updateStats();
+      renderRequests();
+      // Update badge
+      const badge = document.getElementById('pendingBadge');
+      badge.textContent = pendingRequests.length;
+      badge.style.display = pendingRequests.length > 0 ? 'inline-block' : 'none';
+      // Reload members list in background
+      loadMembers();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || 'Could not accept request.', 'error');
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check" style="margin-right:.3rem"></i>Accept'; }
+    }
+  } catch(e) {
+    toast('Server error.', 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check" style="margin-right:.3rem"></i>Accept'; }
+  }
+}
+
+async function rejectRequest(id) {
+  const r    = pendingRequests.find(x => x._id === id);
+  const name = r?.user?.fullName || r?.user?.username || 'this user';
+  if (!confirm(`Decline the request from ${name}?`)) return;
+  const btn = document.querySelector(`#req-${id} .req-btn.reject`);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+  try {
+    const token = sessionStorage.getItem('token') || '';
+    const res = await fetch(`${COMM_URL}/membership/${id}/reject`, {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      pendingRequests = pendingRequests.filter(x => x._id !== id);
+      toast('Request declined.', 'info');
+      updateStats();
+      renderRequests();
+      const badge = document.getElementById('pendingBadge');
+      badge.textContent = pendingRequests.length;
+      badge.style.display = pendingRequests.length > 0 ? 'inline-block' : 'none';
+    } else {
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || 'Could not reject request.', 'error');
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-times" style="margin-right:.3rem"></i>Decline'; }
+    }
+  } catch(e) {
+    toast('Server error.', 'error');
+  }
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function closeModalOutside(e,id) { if (e.target === document.getElementById(id)) closeModal(id); }
+function toast(msg, type='success') {
+  const el = document.getElementById('alertToast');
+  el.style.color       = type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.style.borderColor = type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='info'?'info-circle':'exclamation-circle'}" style="margin-right:.4rem"></i>${msg}`;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3200);
+}
+function toggleTheme() { const dark=document.documentElement.getAttribute('data-theme')==='dark'; document.documentElement.setAttribute('data-theme',dark?'light':'dark'); sessionStorage.setItem('theme',dark?'light':'dark'); document.getElementById('themeIcon').className=dark?'fas fa-moon':'fas fa-sun'; }
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function logout() { sessionStorage.clear(); window.location.href = 'login_2.html'; }
+</script>
+</body>
+</html>

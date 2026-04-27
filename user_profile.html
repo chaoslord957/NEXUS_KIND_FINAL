@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — My Profile</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--sidebar:#fff;--sidebar-w:260px;--topbar-h:68px;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--sidebar:#0f1f3d;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* ── Sidebar (identical to dashboard) ── */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.07);transition:transform .3s}
+.sidebar-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem}
+.sidebar-logo .logo-icon{font-size:1.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo h2{font-size:1.25rem;font-weight:800;color:var(--text);letter-spacing:-.01em}
+.sidebar-logo p{font-size:.68rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:.05rem}
+.sidebar-nav{flex:1;padding:1.2rem 0;overflow-y:auto}
+.nav-section{padding:.4rem 1.5rem .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.5rem;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;border-left:3px solid transparent;transition:all .2s;cursor:pointer}
+.nav-item:hover{background:rgba(168,34,34,.06);color:var(--bg1);border-left-color:rgba(168,34,34,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(168,34,34,.12),rgba(118,75,162,.06));color:var(--bg1);border-left-color:var(--bg1)}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.sidebar-bottom{padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.user-mini{display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:12px;cursor:pointer;transition:background .2s}
+.user-mini:hover{background:rgba(168,34,34,.06)}
+.user-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem;flex-shrink:0}
+.u-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.u-role{font-size:.72rem;color:var(--muted)}
+
+/* ── Topbar ── */
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-left{flex:1;display:flex;align-items:center;gap:1rem}
+.page-title{font-size:1.2rem;font-weight:800;color:var(--text)}
+.page-subtitle{font-size:.8rem;color:var(--muted);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.75rem;margin-left:auto}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem;position:relative}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+
+/* ── Main ── */
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2rem;min-height:calc(100vh - var(--topbar-h));width:calc(100% - var(--sidebar-w))}
+
+/* ── Profile Hero ── */
+.profile-hero{background:linear-gradient(135deg,var(--bg1),var(--bg2));border-radius:22px;padding:2.2rem 2.4rem;margin-bottom:2rem;position:relative;overflow:hidden;color:#fff;display:flex;align-items:center;gap:2rem}
+.profile-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,.07);border-radius:50%}
+.profile-hero::after{content:'';position:absolute;bottom:-50px;right:100px;width:130px;height:130px;background:rgba(255,255,255,.05);border-radius:50%}
+.hero-avatar{width:90px;height:90px;border-radius:22px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:#fff;flex-shrink:0;border:3px solid rgba(255,255,255,.35);position:relative;z-index:1}
+.hero-info{position:relative;z-index:1;flex:1}
+.hero-name{font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:.3rem}
+.hero-username{font-size:.9rem;opacity:.8;margin-bottom:.6rem}
+.hero-badges{display:flex;gap:.6rem;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:700;backdrop-filter:blur(6px)}
+.hero-meta{display:flex;gap:2rem;margin-left:auto;position:relative;z-index:1}
+.hero-stat{text-align:center}
+.hero-stat-val{font-size:1.8rem;font-weight:800;line-height:1}
+.hero-stat-lbl{font-size:.72rem;opacity:.75;margin-top:.2rem;white-space:nowrap}
+
+/* ── Grid layout ── */
+.profile-grid{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start}
+@media(max-width:960px){.profile-grid{grid-template-columns:1fr}}
+
+/* ── Section card ── */
+.pcard{background:var(--card);border-radius:18px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:1.5rem;overflow:hidden}
+.pcard-header{padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pcard-title{font-size:.95rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:.6rem}
+.pcard-title i{color:var(--bg1);font-size:.9rem}
+.pcard-body{padding:1.4rem 1.5rem}
+.edit-btn{padding:.35rem .85rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.edit-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+
+/* ── Info rows ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+.info-item{}
+.info-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem}
+.info-value{font-size:.93rem;font-weight:600;color:var(--text)}
+.info-value.empty{color:var(--muted);font-style:italic;font-weight:400}
+
+/* ── Skill chips ── */
+.skills-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.skill-chip{padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(168,34,34,.08);color:var(--bg1);border:1.5px solid rgba(168,34,34,.2)}
+.skill-chip.empty{background:var(--body-bg);color:var(--muted);border-color:var(--border);font-style:italic}
+
+/* ── Hours bar ── */
+.hours-bar-wrap{margin-top:.5rem}
+.hours-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.4rem;font-weight:600}
+.hours-bar-bg{background:var(--body-bg);border-radius:20px;height:10px;overflow:hidden;border:1px solid var(--border)}
+.hours-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--bg1),var(--bg2));transition:width .8s ease}
+
+/* ── Experience badge ── */
+.exp-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:12px;font-size:.85rem;font-weight:700;margin-top:.3rem}
+.exp-badge.beginner{background:rgba(39,174,96,.1);color:#27ae60}
+.exp-badge.intermediate{background:rgba(41,128,185,.1);color:#2980b9}
+.exp-badge.experienced{background:rgba(243,156,18,.1);color:#e67e22}
+.exp-badge.expert{background:rgba(168,34,34,.1);color:var(--bg1)}
+
+/* ── Edit modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:1.5rem}
+.modal-overlay.open{display:flex;animation:mfadeIn .2s ease}
+@keyframes mfadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--card);border-radius:22px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 72px rgba(0,0,0,.22);animation:mslideUp .25s ease}
+@keyframes mslideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-top{padding:1.5rem 1.8rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-top h3{font-size:1.1rem;font-weight:800;color:var(--text)}
+.modal-close{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .2s}
+.modal-close:hover{border-color:var(--bg1);color:var(--bg1)}
+.modal-body{padding:1.4rem 1.8rem}
+.field{margin-bottom:1.2rem}
+.field label{display:block;font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.field input,.field select,.field textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:.9rem;outline:none;transition:border .2s;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--bg1);box-shadow:0 0 0 3px rgba(168,34,34,.08)}
+.field textarea{resize:vertical;min-height:80px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.modal-footer{padding:1.2rem 1.8rem 1.6rem;display:flex;gap:.75rem;border-top:1px solid var(--border)}
+.save-btn{flex:1;padding:.85rem;border:none;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .25s}
+.save-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(168,34,34,.25)}
+.save-btn:disabled{opacity:.6;cursor:not-allowed}
+.cancel-btn{padding:.85rem 1.4rem;border:1.5px solid var(--border);border-radius:12px;background:transparent;color:var(--text);font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s}
+.cancel-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+
+/* ── Chip selector in modal ── */
+.chip-wrap{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.3rem}
+.m-chip{padding:.3rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;border:1.5px solid var(--border);background:var(--body-bg);color:var(--muted);cursor:pointer;transition:all .2s}
+.m-chip.selected{background:rgba(168,34,34,.1);color:var(--bg1);border-color:rgba(168,34,34,.35)}
+
+/* ── Loading skeleton ── */
+.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--body-bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;height:18px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:.85rem 1.4rem;border-radius:12px;color:#fff;font-size:.88rem;font-weight:700;z-index:99999;display:none;animation:toastIn .3s ease;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+@keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ── Misc ── */
+.divider-line{height:1px;background:var(--border);margin:1rem 0}
+.member-since{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;margin-top:.5rem}
+
+/* ── Responsive ── */
+.hamburger{display:none;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .main,.topbar{margin-left:0;left:0}.topbar{left:0}
+  .hamburger{display:flex!important}
+  .profile-hero{flex-direction:column;text-align:center}
+  .hero-meta{margin-left:0;justify-content:center}
+  .info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div><h2>NexusKind</h2><p>Volunteer Portal</p></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <div class="nav-item" onclick="window.location.href='user_dashboard_3.html'"><i class="fas fa-th-large"></i> Dashboard</div>
+    <div class="nav-section">Explore</div>
+    <div class="nav-item" onclick="window.location.href='user_dashboard_3.html'"><i class="fas fa-tasks"></i> All Tasks</div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item active"><i class="fas fa-user-circle"></i> My Profile</div>
+    <div class="nav-item" onclick="logout()" style="color:#c0392b"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="user-mini">
+      <div class="user-avatar" id="avatarInitials">U</div>
+      <div>
+        <div class="u-name" id="sidebarName">Volunteer</div>
+        <div class="u-role">Community Member</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="topbar-left">
+    <div>
+      <div class="page-title">My Profile</div>
+      <div class="page-subtitle">View and edit your volunteer information</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
+    <div class="icon-btn" onclick="window.location.href='user_dashboard_3.html'" title="Back to Dashboard">
+      <i class="fas fa-th-large"></i>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Hero -->
+  <div class="profile-hero" id="profileHero">
+    <div class="hero-avatar" id="heroAvatar">U</div>
+    <div class="hero-info">
+      <div class="hero-name" id="heroName">Loading…</div>
+      <div class="hero-username" id="heroUsername">@username</div>
+      <div class="hero-badges" id="heroBadges"></div>
+    </div>
+    <div class="hero-meta" id="heroMeta"></div>
+  </div>
+
+  <!-- Grid -->
+  <div class="profile-grid">
+
+    <!-- LEFT column -->
+    <div>
+
+      <!-- Personal Info -->
+      <div class="pcard">
+        <div class="pcard-header">
+          <div class="pcard-title"><i class="fas fa-user"></i> Personal Information</div>
+          <button class="edit-btn" onclick="openModal('personal')"><i class="fas fa-pen"></i> Edit</button>
+        </div>
+        <div class="pcard-body">
+          <div class="info-grid" id="personalGrid">
+            <div class="info-item"><div class="info-label">Full Name</div><div class="skeleton" style="width:70%"></div></div>
+            <div class="info-item"><div class="info-label">Age</div><div class="skeleton" style="width:40%"></div></div>
+            <div class="info-item"><div class="info-label">Email</div><div class="skeleton" style="width:85%"></div></div>
+            <div class="info-item"><div class="info-label">Phone</div><div class="skeleton" style="width:60%"></div></div>
+            <div class="info-item"><div class="info-label">Location</div><div class="skeleton" style="width:75%"></div></div>
+            <div class="info-item"><div class="info-label">Profession</div><div class="skeleton" style="width:65%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Volunteer Details -->
+      <div class="pcard">
+        <div class="pcard-header">
+          <div class="pcard-title"><i class="fas fa-hands-helping"></i> Volunteer Details</div>
+          <button class="edit-btn" onclick="openModal('volunteer')"><i class="fas fa-pen"></i> Edit</button>
+        </div>
+        <div class="pcard-body">
+          <div class="info-item" style="margin-bottom:1.2rem">
+            <div class="info-label">Experience Level</div>
+            <div id="expBadge"><div class="skeleton" style="width:140px;height:32px;border-radius:12px"></div></div>
+          </div>
+          <div class="info-item" style="margin-bottom:1.2rem">
+            <div class="info-label">Weekly Availability</div>
+            <div class="hours-bar-wrap" id="hoursBarWrap">
+              <div class="skeleton" style="height:10px;border-radius:20px"></div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Skills</div>
+            <div class="skills-wrap" id="skillsWrap">
+              <div class="skeleton" style="width:80px;height:28px;border-radius:20px"></div>
+              <div class="skeleton" style="width:100px;height:28px;border-radius:20px"></div>
+              <div class="skeleton" style="width:70px;height:28px;border-radius:20px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT column -->
+    <div class="sidebar-sticky">
+
+      <!-- Account Info -->
+      <div class="pcard">
+        <div class="pcard-header">
+          <div class="pcard-title"><i class="fas fa-shield-alt"></i> Account</div>
+        </div>
+        <div class="pcard-body">
+          <div class="info-item" style="margin-bottom:1rem">
+            <div class="info-label">Username</div>
+            <div class="info-value" id="accUsername"><div class="skeleton" style="width:60%"></div></div>
+          </div>
+          <div class="info-item" style="margin-bottom:1rem">
+            <div class="info-label">Role</div>
+            <div class="info-value"><span style="background:rgba(168,34,34,.1);color:var(--bg1);padding:.2rem .65rem;border-radius:8px;font-size:.8rem;font-weight:700">Volunteer</span></div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Member Since</div>
+            <div class="member-since"><i class="fas fa-calendar-alt"></i><span id="accJoined">—</span></div>
+          </div>
+          <div class="divider-line"></div>
+          <button class="edit-btn" style="width:100%;justify-content:center" onclick="openModal('password')">
+            <i class="fas fa-key"></i> Change Password
+          </button>
+        </div>
+      </div>
+
+      <!-- Last Login -->
+      <div class="pcard">
+        <div class="pcard-header">
+          <div class="pcard-title"><i class="fas fa-clock"></i> Activity</div>
+        </div>
+        <div class="pcard-body">
+          <div class="info-item" style="margin-bottom:.8rem">
+            <div class="info-label">Last Login</div>
+            <div class="info-value" id="lastLogin">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Security Question</div>
+            <div class="info-value" id="secQuestion"><span class="info-value empty">Not set</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- ── Edit Personal Modal ── -->
+<div class="modal-overlay" id="modalPersonal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3><i class="fas fa-user" style="color:var(--bg1);margin-right:.5rem"></i>Edit Personal Info</h3>
+      <button class="modal-close" onclick="closeModal('personal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Full Name</label><input type="text" id="e_fullName" placeholder="Your full name"></div>
+        <div class="field"><label>Age</label><input type="number" id="e_age" min="16" max="100" placeholder="Age"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input type="email" id="e_email" placeholder="email@example.com"></div>
+        <div class="field"><label>Phone</label><input type="tel" id="e_phone" placeholder="+91 XXXXX XXXXX"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Location</label><input type="text" id="e_location" placeholder="City, State, Country"></div>
+        <div class="field">
+          <label>Profession</label>
+          <select id="e_profession">
+            <option value="">Select…</option>
+            <option>Student</option>
+            <option>Healthcare Professional</option>
+            <option>Teacher / Educator</option>
+            <option>Engineer / IT</option>
+            <option>Business / Finance</option>
+            <option>Lawyer / Legal</option>
+            <option>Artist / Creative</option>
+            <option>Retired</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal('personal')">Cancel</button>
+      <button class="save-btn" id="savePersonalBtn" onclick="savePersonal()"><i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Volunteer Modal ── -->
+<div class="modal-overlay" id="modalVolunteer">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3><i class="fas fa-hands-helping" style="color:var(--bg1);margin-right:.5rem"></i>Edit Volunteer Details</h3>
+      <button class="modal-close" onclick="closeModal('volunteer')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Experience Level</label>
+        <select id="e_experience">
+          <option value="">Select…</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Experienced</option>
+          <option>Expert</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Hours Available Per Week: <strong id="hoursDisplay">10</strong> hrs</label>
+        <input type="range" id="e_hours" min="1" max="40" value="10"
+          oninput="document.getElementById('hoursDisplay').textContent=this.value"
+          style="width:100%;accent-color:var(--bg1);margin-top:.4rem">
+      </div>
+      <div class="field">
+        <label>Skills</label>
+        <div class="chip-wrap" id="skillChips">
+          <div class="m-chip" onclick="toggleSkill(this,'Medical')"><i class="fas fa-heartbeat"></i> Medical</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Teaching')"><i class="fas fa-chalkboard-teacher"></i> Teaching</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Manual Labor')"><i class="fas fa-hard-hat"></i> Manual Labor</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Driving')"><i class="fas fa-car"></i> Driving</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Tech / IT')"><i class="fas fa-laptop-code"></i> Tech / IT</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Cooking')"><i class="fas fa-utensils"></i> Cooking</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Fundraising')"><i class="fas fa-donate"></i> Fundraising</div>
+          <div class="m-chip" onclick="toggleSkill(this,'Admin / Coordination')"><i class="fas fa-tasks"></i> Admin</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal('volunteer')">Cancel</button>
+      <button class="save-btn" id="saveVolunteerBtn" onclick="saveVolunteer()"><i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Change Password Modal ── -->
+<div class="modal-overlay" id="modalPassword">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3><i class="fas fa-key" style="color:var(--bg1);margin-right:.5rem"></i>Change Password</h3>
+      <button class="modal-close" onclick="closeModal('password')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Current Password</label><input type="password" id="e_curPwd" placeholder="Enter current password"></div>
+      <div class="field"><label>New Password</label><input type="password" id="e_newPwd" placeholder="Min. 6 characters"></div>
+      <div class="field"><label>Confirm New Password</label><input type="password" id="e_cfmPwd" placeholder="Repeat new password"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal('password')">Cancel</button>
+      <button class="save-btn" id="savePwdBtn" onclick="savePassword()"><i class="fas fa-key" style="margin-right:.4rem"></i>Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API   = 'https://nexus-kind-ngo.onrender.com/api';
+const AUTH  = 'https://nexus-kind-auth-3vdl.onrender.com/api';
+let userData = {};
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const token = sessionStorage.getItem('token');
+  if (!token) { window.location.href = 'login_2.html'; return; }
+
+  if (sessionStorage.getItem('theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeIcon').className = 'fas fa-sun';
+  }
+
+  loadProfile();
+});
+
+// ── Fetch profile from DB ─────────────────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const token = sessionStorage.getItem('token');
+    const res   = await fetch(`${API}/user/profile`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    userData = data.user;
+    renderProfile(userData);
+  } catch(e) {
+    toast(`Could not load profile: ${e.message}. Is ngo_server.js running on port 5002?`, 'error');
+  }
+}
+
+// ── Render all sections ───────────────────────────────────────────────────────
+function renderProfile(u) {
+  const name     = u.fullName || u.username || 'Volunteer';
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+  // Hero
+  document.getElementById('heroAvatar').textContent   = initials;
+  document.getElementById('heroName').textContent     = name;
+  document.getElementById('heroUsername').textContent = `@${u.username}`;
+  document.getElementById('avatarInitials').textContent = initials;
+  document.getElementById('sidebarName').textContent  = name;
+
+  const badges = [];
+  if (u.profession)      badges.push(u.profession);
+  if (u.location)        badges.push(`📍 ${u.location}`);
+  if (u.experienceLevel) badges.push(u.experienceLevel);
+  document.getElementById('heroBadges').innerHTML = badges
+    .map(b => `<span class="hero-badge">${esc(b)}</span>`).join('');
+
+  // Hero meta stats
+  const hoursPerWeek = u.timeAvailablePerWeek || 0;
+  const skillCount   = u.skills ? u.skills.split(',').filter(Boolean).length : 0;
+  document.getElementById('heroMeta').innerHTML = `
+    <div class="hero-stat"><div class="hero-stat-val">${hoursPerWeek}</div><div class="hero-stat-lbl">Hrs / Week</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">${skillCount}</div><div class="hero-stat-lbl">Skills</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">${u.age || '—'}</div><div class="hero-stat-lbl">Age</div></div>`;
+
+  // Personal info grid
+  document.getElementById('personalGrid').innerHTML = `
+    <div class="info-item"><div class="info-label">Full Name</div><div class="info-value ${!u.fullName?'empty':''}">${esc(u.fullName||'Not set')}</div></div>
+    <div class="info-item"><div class="info-label">Age</div><div class="info-value ${!u.age?'empty':''}">${u.age||'Not set'}</div></div>
+    <div class="info-item"><div class="info-label">Email</div><div class="info-value ${!u.email?'empty':''}">${esc(u.email||'Not set')}</div></div>
+    <div class="info-item"><div class="info-label">Phone</div><div class="info-value ${!u.phone?'empty':''}">${esc(u.phone||'Not set')}</div></div>
+    <div class="info-item"><div class="info-label">Location</div><div class="info-value ${!u.location?'empty':''}">${esc(u.location||'Not set')}</div></div>
+    <div class="info-item"><div class="info-label">Profession</div><div class="info-value ${!u.profession?'empty':''}">${esc(u.profession||'Not set')}</div></div>`;
+
+  // Experience badge
+  const expColors = { Beginner:'beginner', Intermediate:'intermediate', Experienced:'experienced', Expert:'expert' };
+  const expClass  = expColors[u.experienceLevel] || 'beginner';
+  const expIcons  = { Beginner:'🌱', Intermediate:'⚡', Experienced:'🔥', Expert:'🏆' };
+  document.getElementById('expBadge').innerHTML = u.experienceLevel
+    ? `<span class="exp-badge ${expClass}">${expIcons[u.experienceLevel]||''} ${esc(u.experienceLevel)}</span>`
+    : `<span class="info-value empty">Not set</span>`;
+
+  // Hours bar
+  const hrs = u.timeAvailablePerWeek || 0;
+  const pct = Math.min((hrs / 40) * 100, 100);
+  document.getElementById('hoursBarWrap').innerHTML = `
+    <div class="hours-label"><span>${hrs} hrs/week</span><span style="color:var(--muted)">Max 40</span></div>
+    <div class="hours-bar-bg"><div class="hours-bar-fill" style="width:${pct}%"></div></div>`;
+
+  // Skills
+  const skills = u.skills ? u.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+  document.getElementById('skillsWrap').innerHTML = skills.length
+    ? skills.map(s => `<span class="skill-chip">${esc(s)}</span>`).join('')
+    : `<span class="skill-chip empty">No skills listed yet</span>`;
+
+  // Account sidebar
+  document.getElementById('accUsername').textContent = `@${u.username}`;
+  document.getElementById('accJoined').textContent   = fmtDate(u.createdAt);
+  document.getElementById('lastLogin').textContent   = u.lastLogin ? fmtDate(u.lastLogin) : 'First session';
+  document.getElementById('secQuestion').innerHTML   = u.secretQuestion
+    ? `<span class="info-value">${esc(u.secretQuestion)}</span>`
+    : `<span class="info-value empty">Not set</span>`;
+}
+
+// ── Open / close modals ───────────────────────────────────────────────────────
+function openModal(type) {
+  if (type === 'personal') {
+    document.getElementById('e_fullName').value  = userData.fullName   || '';
+    document.getElementById('e_age').value       = userData.age        || '';
+    document.getElementById('e_email').value     = userData.email      || '';
+    document.getElementById('e_phone').value     = userData.phone      || '';
+    document.getElementById('e_location').value  = userData.location   || '';
+    document.getElementById('e_profession').value= userData.profession || '';
+  }
+  if (type === 'volunteer') {
+    document.getElementById('e_experience').value = userData.experienceLevel || '';
+    const hrs = userData.timeAvailablePerWeek || 10;
+    document.getElementById('e_hours').value      = hrs;
+    document.getElementById('hoursDisplay').textContent = hrs;
+    // pre-select skill chips
+    const saved = (userData.skills || '').split(',').map(s => s.trim()).filter(Boolean);
+    document.querySelectorAll('.m-chip').forEach(chip => {
+      chip.classList.toggle('selected', saved.includes(chip.dataset.skill || chip.textContent.trim().replace(/\s+/g,' ')));
+    });
+    // set data-skill on chips for reliable matching
+    document.querySelectorAll('.m-chip').forEach(chip => {
+      if (!chip.dataset.skill) {
+        chip.dataset.skill = chip.textContent.trim().replace(/[\n\r]+/g,' ').replace(/\s{2,}/g,' ').trim();
+      }
+      chip.classList.toggle('selected', saved.some(s => chip.dataset.skill.includes(s) || s.includes(chip.dataset.skill.split(' ')[chip.dataset.skill.split(' ').length-1])));
+    });
+  }
+  if (type === 'password') {
+    document.getElementById('e_curPwd').value = '';
+    document.getElementById('e_newPwd').value = '';
+    document.getElementById('e_cfmPwd').value = '';
+  }
+  document.getElementById(`modal${cap(type)}`).classList.add('open');
+}
+
+function closeModal(type) {
+  document.getElementById(`modal${cap(type)}`).classList.remove('open');
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ── Save personal info ────────────────────────────────────────────────────────
+async function savePersonal() {
+  const btn = document.getElementById('savePersonalBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+  try {
+    const token = sessionStorage.getItem('token');
+    const body  = {
+      fullName:   document.getElementById('e_fullName').value.trim()  || null,
+      age:        parseInt(document.getElementById('e_age').value)     || null,
+      email:      document.getElementById('e_email').value.trim()      || null,
+      phone:      document.getElementById('e_phone').value.trim()      || null,
+      location:   document.getElementById('e_location').value.trim()   || null,
+      profession: document.getElementById('e_profession').value        || null,
+    };
+    const res  = await fetch(`${AUTH}/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Update failed');
+    userData = { ...userData, ...body };
+    renderProfile(userData);
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    closeModal('personal');
+    toast('Personal info updated!', 'success');
+  } catch(e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes';
+  }
+}
+
+// ── Save volunteer details ────────────────────────────────────────────────────
+function toggleSkill(el) {
+  el.classList.toggle('selected');
+}
+
+async function saveVolunteer() {
+  const btn = document.getElementById('saveVolunteerBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+  try {
+    const token  = sessionStorage.getItem('token');
+    const selectedSkills = [...document.querySelectorAll('.m-chip.selected')]
+      .map(c => c.dataset.skill || c.textContent.trim().replace(/\s+/g,' ').trim())
+      .join(', ');
+    const body = {
+      experienceLevel:      document.getElementById('e_experience').value || null,
+      timeAvailablePerWeek: parseInt(document.getElementById('e_hours').value) || 0,
+      skills:               selectedSkills || null,
+    };
+    const res  = await fetch(`${AUTH}/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Update failed');
+    userData = { ...userData, ...body };
+    renderProfile(userData);
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    closeModal('volunteer');
+    toast('Volunteer details updated!', 'success');
+  } catch(e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes';
+  }
+}
+
+// ── Change password ───────────────────────────────────────────────────────────
+async function savePassword() {
+  const btn = document.getElementById('savePwdBtn');
+  const cur = document.getElementById('e_curPwd').value;
+  const nw  = document.getElementById('e_newPwd').value;
+  const cfm = document.getElementById('e_cfmPwd').value;
+  if (!cur || !nw || !cfm) { toast('Please fill all password fields', 'error'); return; }
+  if (nw.length < 6)       { toast('New password must be at least 6 characters', 'error'); return; }
+  if (nw !== cfm)          { toast('Passwords do not match', 'error'); return; }
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating…';
+  try {
+    const token = sessionStorage.getItem('token');
+    const res   = await fetch(`${AUTH}/change-password`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword: cur, newPassword: nw })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Password change failed');
+    closeModal('password');
+    toast('Password updated successfully!', 'success');
+  } catch(e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-key" style="margin-right:.4rem"></i>Update Password';
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  if (isNaN(dt)) return String(d);
+  return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = type === 'success' ? '#27ae60' : type === 'error' ? '#c0392b' : '#2980b9';
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 3200);
+}
+
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  sessionStorage.setItem('theme', dark ? 'light' : 'dark');
+  document.getElementById('themeIcon').className = dark ? 'fas fa-moon' : 'fas fa-sun';
+}
+
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function logout()       { sessionStorage.clear(); window.location.href = 'login_2.html'; }
+</script>
+</body>
+</html>

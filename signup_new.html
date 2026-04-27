@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Sign Up</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--input-bg:#fff;--step-inactive:#e0e0e0}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#0f3460;--bg2:#1a1a2e;--input-bg:#1e2a45;--step-inactive:#2d3748}
+*{transition:background-color .3s,color .3s;box-sizing:border-box}
+body{background:linear-gradient(135deg,var(--bg1),var(--bg2));font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;margin:0}
+.theme-btn{position:fixed;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.2);border:none;color:#fff;width:46px;height:46px;border-radius:50%;font-size:1.1rem;cursor:pointer;backdrop-filter:blur(10px);z-index:1000;transition:all .3s}
+.theme-btn:hover{background:rgba(255,255,255,.35);transform:rotate(180deg)}
+.card{background:var(--card);border-radius:24px;padding:2.5rem 2.2rem;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;overflow:hidden;width:100%;max-width:560px;border:none}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--bg1),var(--bg2))}
+.logo{text-align:center;margin-bottom:1.5rem}
+.logo-icon{font-size:2.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo h1{font-size:1.6rem;font-weight:700;color:var(--text);margin:.4rem 0 .2rem}
+.logo p{color:var(--muted);font-size:.83rem;margin:0}
+.tabs{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.tab-btn{flex:1;padding:.7rem .5rem;border:none;background:transparent;color:var(--text);font-weight:600;font-size:.92rem;border-radius:10px;cursor:pointer;transition:all .25s}
+.tab-btn.active{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;box-shadow:0 4px 14px rgba(102,126,234,.3)}
+.tab-btn .tab-icon{display:block;font-size:1.1rem;margin-bottom:.25rem}
+
+/* Step progress */
+.step-progress{display:flex;align-items:center;margin-bottom:1.8rem;gap:0}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;top:15px;left:50%;width:100%;height:2px;background:var(--step-inactive);z-index:0;transition:background .3s}
+.step.done:not(:last-child)::after,.step.active:not(:last-child)::after{background:linear-gradient(90deg,var(--bg1),var(--bg2))}
+.step-circle{width:30px;height:30px;border-radius:50%;background:var(--step-inactive);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--muted);z-index:1;transition:all .3s;position:relative}
+.step.active .step-circle{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;box-shadow:0 3px 12px rgba(168,34,34,.3)}
+.step.done .step-circle{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+.step-label{font-size:.65rem;color:var(--muted);margin-top:.3rem;font-weight:600;text-align:center;white-space:nowrap}
+.step.active .step-label{color:var(--bg1)}
+
+/* Form steps */
+.form-step{display:none;animation:fadeIn .3s ease}
+.form-step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.form-wrap{display:none}
+.form-wrap.active{display:block}
+
+/* Fields */
+.field{margin-bottom:1.2rem}
+.field label{display:block;margin-bottom:.35rem;color:var(--text);font-weight:600;font-size:.85rem}
+.field label .req{color:#a82222;margin-left:2px}
+.field-inner{position:relative}
+.field-inner i.lead{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;z-index:1}
+.field input,.field select,.field textarea{width:100%;padding:.8rem 1rem .8rem 2.6rem;border:2px solid var(--border);border-radius:11px;font-size:.93rem;background:var(--input-bg);color:var(--text);outline:none;transition:border .25s;font-family:inherit}
+.field textarea{padding-top:.8rem;resize:vertical;min-height:80px}
+.field select{cursor:pointer}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--bg1);box-shadow:0 0 0 3px rgba(168,34,34,.1)}
+.field-hint{font-size:.75rem;color:var(--muted);margin-top:.3rem}
+.no-icon input,.no-icon select,.no-icon textarea{padding-left:1rem}
+.eye-btn{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:.3rem}
+.char-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:.25rem}
+
+/* Password strength */
+.strength-bar{height:4px;border-radius:4px;background:var(--border);margin-top:.5rem;overflow:hidden}
+.strength-fill{height:100%;width:0%;border-radius:4px;transition:all .3s}
+.strength-text{font-size:.72rem;margin-top:.25rem;font-weight:600}
+
+/* Two-col grid */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.field-row{grid-template-columns:1fr}}
+
+/* Slider */
+.slider-wrap{padding:.5rem 0}
+.slider-wrap input[type=range]{width:100%;accent-color:var(--bg1);cursor:pointer}
+.slider-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:.2rem}
+.slider-value{text-align:center;font-weight:700;color:var(--bg1);font-size:.9rem;margin-bottom:.3rem}
+
+/* Skill chips */
+.chips-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.4rem}
+.chip{padding:.35rem .8rem;border:2px solid var(--border);border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s;background:var(--input-bg)}
+.chip.selected{border-color:var(--bg1);background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+
+/* Checklist */
+.checklist{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.4rem}
+.check-item{display:flex;align-items:center;gap:.4rem;padding:.4rem .75rem;border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);background:var(--input-bg);transition:all .2s}
+.check-item.checked{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+.check-item i{font-size:.75rem}
+
+/* Toggle */
+.toggle-wrap{display:flex;align-items:center;gap:.75rem;margin-top:.3rem}
+.toggle{position:relative;width:46px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:linear-gradient(135deg,var(--bg1),var(--bg2))}
+.toggle input:checked+.toggle-slider::before{transform:translateX(22px)}
+.toggle-label{font-size:.88rem;color:var(--text);font-weight:600}
+
+/* File upload */
+.file-upload{border:2px dashed var(--border);border-radius:11px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .25s;background:var(--input-bg)}
+.file-upload:hover{border-color:var(--bg1);background:rgba(168,34,34,.03)}
+.file-upload i{font-size:1.5rem;color:var(--muted);display:block;margin-bottom:.4rem}
+.file-upload p{font-size:.82rem;color:var(--muted);margin:0}
+.file-upload input{display:none}
+.file-name{font-size:.78rem;color:var(--bg1);margin-top:.4rem;font-weight:600}
+
+/* Map pin */
+.map-placeholder{border:2px solid var(--border);border-radius:11px;padding:1.5rem;text-align:center;background:var(--input-bg);cursor:pointer;transition:all .25s}
+.map-placeholder:hover{border-color:var(--bg1)}
+.map-placeholder i{font-size:2rem;color:var(--bg1);display:block;margin-bottom:.5rem}
+.map-placeholder p{font-size:.82rem;color:var(--muted);margin:0}
+.map-coords{font-size:.78rem;color:var(--bg1);font-weight:600;margin-top:.4rem}
+
+/* Buttons */
+.btn-row{display:flex;gap:.75rem;margin-top:1.2rem}
+.btn-next,.btn-submit{flex:1;padding:.85rem;border:none;border-radius:11px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:600;font-size:.97rem;cursor:pointer;transition:all .25s}
+.btn-next:hover:not(:disabled),.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(102,126,234,.3)}
+.btn-next:disabled,.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+.btn-back{padding:.85rem 1.4rem;border:2px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font-weight:600;font-size:.97rem;cursor:pointer;transition:all .25s}
+.btn-back:hover{border-color:var(--bg1);color:var(--bg1)}
+
+.alert{padding:.7rem 1rem;border-radius:9px;margin-bottom:1rem;font-size:.85rem}
+.alert-error{background:#fee;color:#c33;border:1px solid #fcc}
+.alert-success{background:#efe;color:#3a3;border:1px solid #cfc}
+
+.section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--bg1);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid rgba(168,34,34,.15)}
+
+.login-link{text-align:center;margin-top:1.2rem;font-size:.85rem;color:var(--muted)}
+.login-link a{color:var(--bg1);font-weight:600;text-decoration:none}
+
+@media(max-width:500px){.card{padding:1.8rem 1.2rem}.logo h1{font-size:1.3rem}.step-label{display:none}}
+</style>
+</head>
+<body>
+<button class="theme-btn" id="themeBtn"><i class="fas fa-moon" id="themeIcon"></i></button>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <h1>NexusKind</h1>
+    <p>Join the front lines of community relief</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="userTab">
+      <span class="tab-icon"><i class="fas fa-user"></i></span>
+      Sign Up as User
+    </button>
+    <button class="tab-btn" id="ngoTab">
+      <span class="tab-icon"><i class="fas fa-building"></i></span>
+      Sign Up as NGO
+    </button>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <!-- ═══════════════════ USER FORM ═══════════════════ -->
+  <div class="form-wrap active" id="userFormWrap">
+    <!-- Step Progress -->
+    <div class="step-progress" id="userStepProgress">
+      <div class="step active" data-step="1"><div class="step-circle">1</div><div class="step-label">Account</div></div>
+      <div class="step" data-step="2"><div class="step-circle">2</div><div class="step-label">Personal</div></div>
+      <div class="step" data-step="3"><div class="step-circle">3</div><div class="step-label">Volunteer</div></div>
+    </div>
+
+    <!-- Step 1: Account -->
+    <div class="form-step active" id="userStep1">
+      <div class="section-title"><i class="fas fa-lock" style="margin-right:.4rem"></i>Account Details</div>
+      <div class="field">
+        <label>Username <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-at lead"></i>
+          <input type="text" id="u_username" placeholder="Choose a unique username" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-lock lead"></i>
+          <input type="password" id="u_password" placeholder="Create a strong password" oninput="checkStrength(this,'uStrength','uStrengthText')" required>
+          <button type="button" class="eye-btn" onclick="togglePwd('u_password',this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="uStrength"></div></div>
+        <div class="strength-text" id="uStrengthText"></div>
+      </div>
+      <div class="field">
+        <label>Secret Question <span class="req">*</span></label>
+        <div class="field-inner no-icon">
+          <select id="u_secret_q">
+            <option value="">Select a security question…</option>
+            <option>What was the name of your first pet?</option>
+            <option>What is your mother's maiden name?</option>
+            <option>What city were you born in?</option>
+            <option>What was the name of your first school?</option>
+            <option>What is your favourite childhood book?</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Secret Answer <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-key lead"></i>
+          <input type="text" id="u_secret_a" placeholder="Your answer">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-next" onclick="nextStep('user',1)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- Step 2: Personal -->
+    <div class="form-step" id="userStep2">
+      <div class="section-title"><i class="fas fa-user-circle" style="margin-right:.4rem"></i>Personal Information</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <div class="field-inner">
+            <i class="fas fa-user lead"></i>
+            <input type="text" id="u_name" placeholder="Your full name">
+          </div>
+        </div>
+        <div class="field">
+          <label>Age <span class="req">*</span></label>
+          <div class="field-inner">
+            <i class="fas fa-birthday-cake lead"></i>
+            <input type="number" id="u_age" placeholder="Your age" min="16" max="100">
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Email</label>
+          <div class="field-inner">
+            <i class="fas fa-envelope lead"></i>
+            <input type="email" id="u_email" placeholder="your@email.com">
+          </div>
+        </div>
+        <div class="field">
+          <label>Contact Number</label>
+          <div class="field-inner">
+            <i class="fas fa-phone lead"></i>
+            <input type="tel" id="u_phone" placeholder="+91 XXXXX XXXXX">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Location <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-map-marker-alt lead"></i>
+          <input type="text" id="u_location" placeholder="City, State, Country">
+        </div>
+      </div>
+      <div class="field">
+        <label>Profession <span class="req">*</span></label>
+        <div class="field-inner no-icon">
+          <select id="u_profession">
+            <option value="">Select your profession…</option>
+            <option>Student</option>
+            <option>Healthcare Professional</option>
+            <option>Teacher / Educator</option>
+            <option>Engineer / IT</option>
+            <option>Social Worker</option>
+            <option>Business / Finance</option>
+            <option>Artist / Creative</option>
+            <option>Retired</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('user',2)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-next" onclick="nextStep('user',2)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- Step 3: Volunteer Info -->
+    <div class="form-step" id="userStep3">
+      <div class="section-title"><i class="fas fa-hands-helping" style="margin-right:.4rem"></i>Volunteer Details</div>
+      <div class="field">
+        <label>Time Available Per Week <span class="req">*</span></label>
+        <div class="slider-value" id="u_time_val">5 hours / week</div>
+        <div class="slider-wrap">
+          <input type="range" id="u_time" min="1" max="40" value="5" oninput="document.getElementById('u_time_val').textContent=this.value+' hours / week'">
+          <div class="slider-labels"><span>1 hr</span><span>40 hrs</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Experience Level</label>
+        <div class="field-inner no-icon">
+          <select id="u_experience">
+            <option value="">Select experience level…</option>
+            <option>No experience (First-time volunteer)</option>
+            <option>Beginner (1–2 events)</option>
+            <option>Intermediate (3–10 events)</option>
+            <option>Experienced (10+ events)</option>
+            <option>Professional / Full-time volunteer</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Skills / Interests</label>
+        <div class="chips-wrap" id="u_skills_wrap">
+          <div class="chip" onclick="toggleChip(this,'u_skills','Medical')"><i class="fas fa-heartbeat"></i> Medical</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Teaching')"><i class="fas fa-chalkboard-teacher"></i> Teaching</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Manual Labor')"><i class="fas fa-hard-hat"></i> Manual Labor</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Driving')"><i class="fas fa-car"></i> Driving</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Tech / IT')"><i class="fas fa-laptop-code"></i> Tech / IT</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Cooking')"><i class="fas fa-utensils"></i> Cooking</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Fundraising')"><i class="fas fa-donate"></i> Fundraising</div>
+          <div class="chip" onclick="toggleChip(this,'u_skills','Admin / Coordination')"><i class="fas fa-tasks"></i> Admin</div>
+        </div>
+        <input type="hidden" id="u_skills" value="">
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('user',3)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-submit" id="userSubmitBtn" onclick="handleSignup('user')">
+          <i class="fas fa-user-plus" style="margin-right:.4rem"></i>Create Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ NGO FORM ═══════════════════ -->
+  <div class="form-wrap" id="ngoFormWrap">
+    <!-- Step Progress -->
+    <div class="step-progress" id="ngoStepProgress">
+      <div class="step active" data-step="1"><div class="step-circle">1</div><div class="step-label">Identity</div></div>
+      <div class="step" data-step="2"><div class="step-circle">2</div><div class="step-label">Contact</div></div>
+      <div class="step" data-step="3"><div class="step-circle">3</div><div class="step-label">Location</div></div>
+      <div class="step" data-step="4"><div class="step-circle">4</div><div class="step-label">Operations</div></div>
+      <div class="step" data-step="5"><div class="step-circle">5</div><div class="step-label">Legal</div></div>
+    </div>
+
+    <!-- NGO Step 1: Identity -->
+    <div class="form-step active" id="ngoStep1">
+      <div class="section-title"><i class="fas fa-building" style="margin-right:.4rem"></i>Organization Identity</div>
+      <div class="field">
+        <label>Organization Name <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-building lead"></i>
+          <input type="text" id="n_org_name" placeholder="Full registered name of the NGO">
+        </div>
+      </div>
+      <div class="field">
+        <label>Organization Type <span class="req">*</span></label>
+        <div class="field-inner no-icon">
+          <select id="n_org_type">
+            <option value="">Select organization type…</option>
+            <option>Healthcare</option>
+            <option>Education</option>
+            <option>Disaster Relief</option>
+            <option>Environmental</option>
+            <option>Women Empowerment</option>
+            <option>Child Welfare</option>
+            <option>Animal Welfare</option>
+            <option>Food & Hunger</option>
+            <option>Elderly Care</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>NGO Registration Number <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-id-card lead"></i>
+          <input type="text" id="n_reg_no" placeholder="CIN / 80G / Charity ID">
+        </div>
+      </div>
+      <div class="field">
+        <label>Organization Bio <span class="req">*</span></label>
+        <div class="field-inner no-icon">
+          <textarea id="n_bio" placeholder="Describe your mission in 280 characters…" maxlength="280" oninput="updateCharCount(this,'n_bio_count')"></textarea>
+        </div>
+        <div class="char-count"><span id="n_bio_count">0</span> / 280</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-next" onclick="nextStep('ngo',1)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- NGO Step 2: Account & Contact -->
+    <div class="form-step" id="ngoStep2">
+      <div class="section-title"><i class="fas fa-address-card" style="margin-right:.4rem"></i>Account & Contact</div>
+      <div class="field">
+        <label>Username <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-at lead"></i>
+          <input type="text" id="n_username" placeholder="Choose a unique username for your NGO">
+        </div>
+      </div>
+      <div class="field">
+        <label>Official Email Address <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-envelope lead"></i>
+          <input type="email" id="n_email" placeholder="official@ngo.org">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-lock lead"></i>
+          <input type="password" id="n_password" placeholder="Create a strong password" oninput="checkStrength(this,'nStrength','nStrengthText')" required>
+          <button type="button" class="eye-btn" onclick="togglePwd('n_password',this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="nStrength"></div></div>
+        <div class="strength-text" id="nStrengthText"></div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Primary Phone Number <span class="req">*</span></label>
+          <div class="field-inner">
+            <i class="fas fa-phone lead"></i>
+            <input type="tel" id="n_phone" placeholder="+91 XXXXX XXXXX">
+          </div>
+        </div>
+        <div class="field">
+          <label>Point of Contact Name <span class="req">*</span></label>
+          <div class="field-inner">
+            <i class="fas fa-user-tie lead"></i>
+            <input type="text" id="n_poc" placeholder="Admin / Manager name">
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('ngo',2)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-next" onclick="nextStep('ngo',2)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- NGO Step 3: Geographic Footprint -->
+    <div class="form-step" id="ngoStep3">
+      <div class="section-title"><i class="fas fa-globe-asia" style="margin-right:.4rem"></i>Geographic Footprint</div>
+      <div class="field">
+        <label>Headquarters Address <span class="req">*</span></label>
+        <div class="field-inner">
+          <i class="fas fa-map-marker-alt lead"></i>
+          <input type="text" id="n_address" placeholder="Full physical address of headquarters">
+        </div>
+      </div>
+      <div class="field">
+        <label>Drop Pin on Map <span class="req">*</span></label>
+        <div class="map-placeholder" id="mapPin" onclick="dropPin()">
+          <i class="fas fa-map-pin"></i>
+          <p>Click to use your current location</p>
+          <div class="map-coords" id="mapCoords" style="display:none"></div>
+        </div>
+        <input type="hidden" id="n_lat" value="">
+        <input type="hidden" id="n_lng" value="">
+        <div class="field-hint">We use this for volunteer proximity matching.</div>
+      </div>
+      <div class="field">
+        <label>Operating Radius</label>
+        <div class="slider-value" id="n_radius_val">25 km</div>
+        <div class="slider-wrap">
+          <input type="range" id="n_radius" min="5" max="100" value="25" oninput="document.getElementById('n_radius_val').textContent=this.value+' km'">
+          <div class="slider-labels"><span>5 km</span><span>100 km</span></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('ngo',3)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-next" onclick="nextStep('ngo',3)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- NGO Step 4: Operational DNA -->
+    <div class="form-step" id="ngoStep4">
+      <div class="section-title"><i class="fas fa-cogs" style="margin-right:.4rem"></i>Operational DNA</div>
+      <div class="field">
+        <label>Required Skill Tags</label>
+        <div class="chips-wrap">
+          <div class="chip" onclick="toggleChip(this,'n_skills','Medical')"><i class="fas fa-heartbeat"></i> Medical</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Manual Labor')"><i class="fas fa-hard-hat"></i> Manual Labor</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Teaching')"><i class="fas fa-chalkboard-teacher"></i> Teaching</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Drivers')"><i class="fas fa-car"></i> Drivers</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Tech / IT')"><i class="fas fa-laptop-code"></i> Tech / IT</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Cooking')"><i class="fas fa-utensils"></i> Cooking</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Fundraising')"><i class="fas fa-donate"></i> Fundraising</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Counselling')"><i class="fas fa-comments"></i> Counselling</div>
+          <div class="chip" onclick="toggleChip(this,'n_skills','Admin')"><i class="fas fa-tasks"></i> Admin</div>
+        </div>
+        <input type="hidden" id="n_skills" value="">
+      </div>
+      <div class="field">
+        <label>Volunteer Capacity (per week)</label>
+        <div class="slider-value" id="n_cap_val">20 volunteers</div>
+        <div class="slider-wrap">
+          <input type="range" id="n_capacity" min="1" max="500" value="20" oninput="document.getElementById('n_cap_val').textContent=this.value+' volunteers'">
+          <div class="slider-labels"><span>1</span><span>500</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Resources Provided to Volunteers</label>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Transport')"><i class="fas fa-bus"></i> Transport</div>
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Food')"><i class="fas fa-utensils"></i> Food</div>
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Safety Gear')"><i class="fas fa-hard-hat"></i> Safety Gear</div>
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Insurance')"><i class="fas fa-shield-alt"></i> Insurance</div>
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Training')"><i class="fas fa-graduation-cap"></i> Training</div>
+          <div class="check-item" onclick="toggleCheck(this,'n_resources','Accommodation')"><i class="fas fa-bed"></i> Accommodation</div>
+        </div>
+        <input type="hidden" id="n_resources" value="">
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('ngo',4)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-next" onclick="nextStep('ngo',4)">Next <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></button>
+      </div>
+    </div>
+
+    <!-- NGO Step 5: Verification & Legal -->
+    <div class="form-step" id="ngoStep5">
+      <div class="section-title"><i class="fas fa-certificate" style="margin-right:.4rem"></i>Verification & Legal</div>
+      <div class="field">
+        <label>Registration Certificate <span class="req">*</span></label>
+        <div class="file-upload" onclick="document.getElementById('n_cert_file').click()">
+          <i class="fas fa-file-upload"></i>
+          <p>Click to upload PDF or JPG of incorporation papers</p>
+          <div class="file-name" id="n_cert_name">No file chosen</div>
+          <input type="file" id="n_cert_file" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'n_cert_name')">
+        </div>
+      </div>
+      <div class="field">
+        <label>Tax-Exempt Status</label>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="n_tax_exempt">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Yes, this NGO is tax-exempt</span>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Website</label>
+          <div class="field-inner">
+            <i class="fas fa-globe lead"></i>
+            <input type="url" id="n_website" placeholder="https://yourngo.org">
+          </div>
+        </div>
+        <div class="field">
+          <label>Instagram</label>
+          <div class="field-inner">
+            <i class="fab fa-instagram lead"></i>
+            <input type="text" id="n_instagram" placeholder="@handle">
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep('ngo',5)"><i class="fas fa-arrow-left" style="margin-right:.3rem"></i> Back</button>
+        <button class="btn-submit" id="ngoSubmitBtn" onclick="handleSignup('ngo')">
+          <i class="fas fa-building" style="margin-right:.4rem"></i>Register NGO
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-link">Already have an account? <a href="login_2.html">Log in</a></div>
+</div>
+
+<script>
+// ── Theme ──────────────────────────────────────────────────────────────────
+const themeBtn=document.getElementById('themeBtn');
+const themeIcon=document.getElementById('themeIcon');
+if(sessionStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');themeIcon.className='fas fa-sun';}
+themeBtn.addEventListener('click',()=>{
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  sessionStorage.setItem('theme',dark?'light':'dark');
+  themeIcon.className=dark?'fas fa-moon':'fas fa-sun';
+});
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+document.getElementById('userTab').addEventListener('click',()=>switchTab('user'));
+document.getElementById('ngoTab').addEventListener('click',()=>switchTab('ngo'));
+
+function switchTab(role){
+  document.getElementById('userTab').classList.toggle('active',role==='user');
+  document.getElementById('ngoTab').classList.toggle('active',role==='ngo');
+  document.getElementById('userFormWrap').classList.toggle('active',role==='user');
+  document.getElementById('ngoFormWrap').classList.toggle('active',role==='ngo');
+  document.getElementById('alertBox').innerHTML='';
+}
+
+// ── Step navigation ────────────────────────────────────────────────────────
+const userMaxSteps=3, ngoMaxSteps=5;
+let userCurrentStep=1, ngoCurrentStep=1;
+
+function nextStep(role,current){
+  if(!validateStep(role,current)) return;
+  const next=current+1;
+  const max=role==='user'?userMaxSteps:ngoMaxSteps;
+  if(next>max) return;
+  goToStep(role,next);
+}
+function prevStep(role,current){
+  if(current<=1) return;
+  goToStep(role,current-1);
+}
+function goToStep(role,target){
+  const prefix=role==='user'?'user':'ngo';
+  const current=role==='user'?userCurrentStep:ngoCurrentStep;
+  const max=role==='user'?userMaxSteps:ngoMaxSteps;
+
+  document.getElementById(`${prefix}Step${current}`).classList.remove('active');
+  document.getElementById(`${prefix}Step${target}`).classList.add('active');
+
+  const steps=document.querySelectorAll(`#${prefix}StepProgress .step`);
+  steps.forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i+1<target) s.classList.add('done');
+    if(i+1===target) s.classList.add('active');
+  });
+
+  if(role==='user') userCurrentStep=target;
+  else ngoCurrentStep=target;
+}
+
+// ── Validation ─────────────────────────────────────────────────────────────
+function validateStep(role,step){
+  clearAlert();
+  if(role==='user'){
+    if(step===1){
+      if(!v('u_username')) return err('Username is required.');
+      if(!v('u_password')) return err('Password is required.');
+      if(val('u_password').length<6) return err('Password must be at least 6 characters.');
+      if(!v('u_secret_q')) return err('Please select a security question.');
+      if(!v('u_secret_a')) return err('Please provide a secret answer.');
+    }
+    if(step===2){
+      if(!v('u_name')) return err('Full name is required.');
+      if(!v('u_age')) return err('Age is required.');
+      if(!v('u_location')) return err('Location is required.');
+      if(!v('u_profession')) return err('Please select your profession.');
+    }
+  }
+  if(role==='ngo'){
+    if(step===1){
+      if(!v('n_org_name')) return err('Organization name is required.');
+      if(!v('n_org_type')) return err('Please select organization type.');
+      if(!v('n_reg_no')) return err('Registration number is required.');
+      if(!v('n_bio')) return err('Organization bio is required.');
+    }
+    if(step===2){
+      if(!v('n_username')) return err('Username is required.');
+      if(!v('n_email')) return err('Official email is required.');
+      if(!v('n_password')) return err('Password is required.');
+      if(val('n_password').length<6) return err('Password must be at least 6 characters.');
+      if(!v('n_phone')) return err('Phone number is required.');
+      if(!v('n_poc')) return err('Point of contact name is required.');
+    }
+    if(step===3){
+      if(!v('n_address')) return err('Headquarters address is required.');
+    }
+  }
+  return true;
+}
+const v=id=>!!document.getElementById(id)?.value?.trim();
+const val=id=>document.getElementById(id)?.value?.trim()||'';
+const err=msg=>{showAlert(msg,'error');return false;}
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function togglePwd(id,btn){
+  const inp=document.getElementById(id);
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.querySelector('i').className=show?'fas fa-eye-slash':'fas fa-eye';
+}
+
+function checkStrength(inp,barId,textId){
+  const pw=inp.value;
+  let score=0;
+  if(pw.length>=8) score++;
+  if(/[A-Z]/.test(pw)) score++;
+  if(/[0-9]/.test(pw)) score++;
+  if(/[^A-Za-z0-9]/.test(pw)) score++;
+  const bar=document.getElementById(barId);
+  const txt=document.getElementById(textId);
+  const levels=[
+    {w:'0%',color:'transparent',label:''},
+    {w:'25%',color:'#e74c3c',label:'Weak'},
+    {w:'50%',color:'#e67e22',label:'Fair'},
+    {w:'75%',color:'#f1c40f',label:'Good'},
+    {w:'100%',color:'#2ecc71',label:'Strong'},
+  ];
+  const l=levels[score];
+  bar.style.width=l.w; bar.style.background=l.color;
+  txt.textContent=l.label; txt.style.color=l.color;
+}
+
+function updateCharCount(el,countId){
+  document.getElementById(countId).textContent=el.value.length;
+}
+
+function toggleChip(el,hiddenId,value){
+  el.classList.toggle('selected');
+  const inp=document.getElementById(hiddenId);
+  let vals=inp.value?inp.value.split(',').filter(Boolean):[];
+  if(el.classList.contains('selected')) vals.push(value);
+  else vals=vals.filter(v=>v!==value);
+  inp.value=vals.join(',');
+}
+
+const checkState={};
+function toggleCheck(el,hiddenId,value){
+  el.classList.toggle('checked');
+  const inp=document.getElementById(hiddenId);
+  let vals=inp.value?inp.value.split(',').filter(Boolean):[];
+  if(el.classList.contains('checked')) vals.push(value);
+  else vals=vals.filter(v=>v!==value);
+  inp.value=vals.join(',');
+}
+
+function showFileName(inp,nameId){
+  const name=inp.files[0]?inp.files[0].name:'No file chosen';
+  document.getElementById(nameId).textContent=name;
+}
+
+function dropPin(){
+  if(!navigator.geolocation){alert('Geolocation not supported.');return;}
+  const pin=document.getElementById('mapPin');
+  pin.innerHTML='<i class="fas fa-spinner fa-spin"></i><p>Getting your location…</p>';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude.toFixed(5);
+    const lng=pos.coords.longitude.toFixed(5);
+    document.getElementById('n_lat').value=lat;
+    document.getElementById('n_lng').value=lng;
+    pin.innerHTML=`<i class="fas fa-check-circle" style="color:var(--bg1)"></i><p>Location captured!</p><div class="map-coords" style="display:block">📍 ${lat}, ${lng}</div>`;
+  },()=>{
+    pin.innerHTML='<i class="fas fa-map-pin"></i><p>Could not get location. Click to retry.</p>';
+  });
+}
+
+function showAlert(msg,type){document.getElementById('alertBox').innerHTML=`<div class="alert alert-${type}">${msg}</div>`;}
+function clearAlert(){document.getElementById('alertBox').innerHTML='';}
+
+// ── API ────────────────────────────────────────────────────────────────────
+const API_URL='https://nexus-kind-auth-3vdl.onrender.com/api';
+
+async function handleSignup(role){
+  clearAlert();
+  const btnId=role==='user'?'userSubmitBtn':'ngoSubmitBtn';
+  const btn=document.getElementById(btnId);
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:.4rem"></i>Creating account…';
+
+  try{
+    let body={};
+    if(role==='user'){
+      body={
+        username: val('u_username'),
+        password: val('u_password'),
+        fullName: val('u_name'),
+        age: parseInt(document.getElementById('u_age').value)||null,
+        email: val('u_email')||null,
+        phone: val('u_phone')||null,
+        location: val('u_location'),
+        profession: val('u_profession'),
+        timeAvailablePerWeek: parseInt(document.getElementById('u_time').value),
+        experienceLevel: val('u_experience')||null,
+        skills: val('u_skills')||null,
+        secretQuestion: val('u_secret_q'),
+        secretAnswer: val('u_secret_a'),
+      };
+    } else {
+      body={
+        username: val('n_username'),
+        password: val('n_password'),
+        organizationName: val('n_org_name'),
+        organizationType: val('n_org_type'),
+        registrationNumber: val('n_reg_no'),
+        bio: val('n_bio'),
+        email: val('n_email'),
+        phone: val('n_phone'),
+        pointOfContact: val('n_poc'),
+        address: val('n_address'),
+        latitude: document.getElementById('n_lat').value||null,
+        longitude: document.getElementById('n_lng').value||null,
+        operatingRadius: parseInt(document.getElementById('n_radius').value),
+        requiredSkills: val('n_skills')||null,
+        volunteerCapacity: parseInt(document.getElementById('n_capacity').value),
+        resourcesProvided: val('n_resources')||null,
+        taxExempt: document.getElementById('n_tax_exempt').checked,
+        website: val('n_website')||null,
+        instagram: val('n_instagram')||null,
+      };
+    }
+
+    const res=await fetch(`${API_URL}/auth/${role}/signup`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const data=await res.json();
+
+    if(res.ok){
+      showAlert('Account created! Redirecting to login…','success');
+      setTimeout(()=>{ window.location.href='login_2.html'; },1500);
+    } else {
+      showAlert(data.message||'Signup failed. Please try again.','error');
+    }
+  } catch(err){
+    showAlert('Cannot reach server. Is the backend running on port 5001?','error');
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML=role==='user'
+      ?'<i class="fas fa-user-plus" style="margin-right:.4rem"></i>Create Account'
+      :'<i class="fas fa-building" style="margin-right:.4rem"></i>Register NGO';
+  }
+}
+</script>
+</body>
+</html>

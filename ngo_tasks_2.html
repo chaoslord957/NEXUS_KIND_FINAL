@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Tasks</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--sidebar:#fff;--sidebar-w:260px;--topbar-h:68px;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--sidebar:#0f1f3d;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.07);transition:transform .3s}
+.sidebar-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem}
+.sidebar-logo .logo-icon{font-size:1.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo h2{font-size:1.25rem;font-weight:800;color:var(--text)}
+.sidebar-logo p{font-size:.68rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sidebar-nav{flex:1;padding:1.2rem 0;overflow-y:auto}
+.nav-section{padding:.4rem 1.5rem .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.5rem;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;border-left:3px solid transparent;transition:all .2s;cursor:pointer}
+.nav-item:hover{background:rgba(168,34,34,.06);color:var(--bg1);border-left-color:rgba(168,34,34,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(168,34,34,.12),rgba(118,75,162,.06));color:var(--bg1);border-left-color:var(--bg1)}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.nav-badge{margin-left:auto;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:20px}
+.sidebar-bottom{padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.ngo-profile-mini{display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:12px;cursor:pointer;transition:background .2s}
+.ngo-profile-mini:hover{background:rgba(168,34,34,.06)}
+.ngo-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem;flex-shrink:0}
+.ngo-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.ngo-role{font-size:.72rem;color:var(--muted)}
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-left{flex:1;display:flex;align-items:center;gap:1rem}
+.page-title{font-size:1.2rem;font-weight:800;color:var(--text)}
+.page-subtitle{font-size:.8rem;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2rem;min-height:calc(100vh - var(--topbar-h))}
+
+/* Tabs */
+.tab-bar{display:flex;gap:.5rem;background:var(--card);border-radius:14px;padding:.5rem;border:1px solid var(--border);margin-bottom:1.8rem;box-shadow:0 2px 8px rgba(0,0,0,.04);width:fit-content}
+.tab-pill{padding:.6rem 1.3rem;border-radius:10px;font-weight:600;font-size:.88rem;cursor:pointer;color:var(--muted);border:none;background:transparent;transition:all .2s;display:flex;align-items:center;gap:.5rem}
+.tab-pill.active{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;box-shadow:0 4px 14px rgba(168,34,34,.25)}
+.tab-pill .count{font-size:.72rem;background:rgba(255,255,255,.3);padding:.1rem .4rem;border-radius:10px}
+.tab-pill:not(.active) .count{background:rgba(168,34,34,.1);color:var(--bg1)}
+
+/* Controls bar */
+.controls-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.55rem 1rem;flex:1;min-width:200px}
+.search-box input{border:none;background:transparent;color:var(--text);font-size:.88rem;outline:none;width:100%}
+.search-box i{color:var(--muted)}
+.filter-select{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:.85rem;outline:none;cursor:pointer}
+.create-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.3rem;border:none;border-radius:10px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .25s;white-space:nowrap}
+.create-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(168,34,34,.3)}
+
+/* Task Cards Grid */
+.tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem}
+.task-card{background:var(--card);border-radius:18px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .25s;cursor:pointer}
+.task-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.1);border-color:var(--bg1)}
+.task-card-header{padding:1.2rem 1.3rem .8rem;border-bottom:1px solid var(--border);position:relative}
+.task-card-header::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.task-card-header.high::before{background:linear-gradient(90deg,var(--bg1),#c0392b)}
+.task-card-header.med::before{background:linear-gradient(90deg,#f39c12,#e67e22)}
+.task-card-header.low::before{background:linear-gradient(90deg,#27ae60,#2ecc71)}
+.task-card-body{padding:1rem 1.3rem}
+.task-card-footer{padding:.8rem 1.3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.01)}
+.tc-title{font-size:.97rem;font-weight:700;color:var(--text);margin-bottom:.3rem;line-height:1.3}
+.tc-category{font-size:.73rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.tc-desc{font-size:.83rem;color:var(--muted);line-height:1.5;margin-bottom:.8rem}
+.tc-meta{display:flex;flex-wrap:wrap;gap:.5rem}
+.tc-chip{display:flex;align-items:center;gap:.35rem;font-size:.75rem;color:var(--muted);background:var(--body-bg);padding:.25rem .6rem;border-radius:8px;border:1px solid var(--border)}
+.tc-chip i{font-size:.68rem;color:var(--bg1)}
+.status-badge{font-size:.72rem;font-weight:700;padding:.25rem .75rem;border-radius:20px}
+.status-badge.ongoing{background:rgba(41,128,185,.12);color:#2980b9}
+.status-badge.completed{background:rgba(39,174,96,.12);color:#27ae60}
+.status-badge.pending{background:rgba(243,156,18,.12);color:#e67e22}
+.priority-badge{font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:6px}
+.priority-badge.high{background:rgba(168,34,34,.1);color:var(--bg1)}
+.priority-badge.med{background:rgba(243,156,18,.1);color:#e67e22}
+.priority-badge.low{background:rgba(39,174,96,.1);color:#27ae60}
+.tc-actions{display:flex;gap:.5rem}
+.tc-action-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:all .2s}
+.tc-action-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+.tc-action-btn.danger:hover{border-color:#e74c3c;color:#e74c3c;background:rgba(231,76,60,.06)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty-state i{font-size:3rem;margin-bottom:1rem;opacity:.4}
+.empty-state h3{font-size:1rem;font-weight:700;margin-bottom:.4rem}
+.empty-state p{font-size:.85rem}
+
+/* Modal overlay */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);overflow-y:auto;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border-radius:22px;padding:2rem;max-width:580px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.22);position:relative;max-height:90vh;overflow-y:auto;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--text)}
+.modal-close{border:none;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:rgba(168,34,34,.08);color:var(--bg1)}
+
+/* Form inside modal */
+.mfield{margin-bottom:1.1rem}
+.mfield label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:.35rem}
+.mfield input,.mfield textarea,.mfield select{width:100%;padding:.75rem 1rem;border:2px solid var(--border);border-radius:11px;font-size:.9rem;background:var(--card);color:var(--text);outline:none;transition:border .25s;font-family:inherit}
+.mfield textarea{resize:vertical;min-height:90px}
+.mfield input:focus,.mfield textarea:focus,.mfield select:focus{border-color:var(--bg1);box-shadow:0 0 0 3px rgba(168,34,34,.1)}
+.field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.submit-btn{width:100%;padding:.85rem;border:none;border-radius:11px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:700;font-size:.97rem;cursor:pointer;transition:all .25s;margin-top:.5rem}
+.submit-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(168,34,34,.3)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* Detail modal */
+.detail-section{margin-bottom:1.2rem}
+.detail-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem}
+.detail-value{font-size:.92rem;color:var(--text);font-weight:500}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main,.topbar{margin-left:0}
+  .tasks-grid{grid-template-columns:1fr}
+  .field-row-2{grid-template-columns:1fr}
+}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+.hamburger{display:none;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text)}
+@media(max-width:768px){.hamburger{display:flex}}
+.alert-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.2rem;font-size:.88rem;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:99999;animation:slideIn .3s ease;display:none}
+@keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar (same as dashboard) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div><h2>NexusKind</h2><p>NGO Portal</p></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-item" href="ngo_dashboard_2.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <div class="nav-section">Operations</div>
+    <div class="nav-item active"><i class="fas fa-tasks"></i> Tasks</div>
+    <a class="nav-item" href="ngo_members.html"><i class="fas fa-users"></i> Members</a>
+    <div class="nav-item" onclick="toast('Donations module coming soon!','info')"><i class="fas fa-hand-holding-heart"></i> Donations</div>
+    <div class="nav-item" onclick="toast('Reports module coming soon!','info')"><i class="fas fa-chart-bar"></i> Reports</div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" onclick="openProfile()"><i class="fas fa-user-circle"></i> Profile</div>
+    <div class="nav-item" onclick="openSettings()"><i class="fas fa-cog"></i> Settings</div>
+    <div class="nav-item" onclick="logout()" style="color:#c0392b"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="ngo-profile-mini" onclick="openProfile()">
+      <div class="ngo-avatar" id="avatarInitials">NK</div>
+      <div><div class="ngo-name" id="ngoDisplayName">My NGO</div><div class="ngo-role">Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- Topbar -->
+<header class="topbar">
+  <button class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="topbar-left">
+    <div>
+      <div class="page-title">Tasks</div>
+      <div class="page-subtitle">Manage your ongoing and completed posts</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></div>
+    <a class="icon-btn" href="ngo_dashboard_2.html" title="Dashboard"><i class="fas fa-th-large"></i></a>
+    <div class="icon-btn" onclick="openSettings()" title="Settings"><i class="fas fa-cog"></i></div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- Tab bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+    <div class="tab-bar">
+      <button class="tab-pill active" id="tab-all" onclick="switchTab('all')"><i class="fas fa-list"></i> All <span class="count" id="cnt-all">0</span></button>
+      <button class="tab-pill" id="tab-ongoing" onclick="switchTab('ongoing')"><i class="fas fa-spinner"></i> Ongoing <span class="count" id="cnt-ongoing">0</span></button>
+      <button class="tab-pill" id="tab-completed" onclick="switchTab('completed')"><i class="fas fa-check-circle"></i> Completed <span class="count" id="cnt-completed">0</span></button>
+      <button class="tab-pill" id="tab-pending" onclick="switchTab('pending')"><i class="fas fa-clock"></i> Pending <span class="count" id="cnt-pending">0</span></button>
+    </div>
+    <button class="create-btn" onclick="openCreateModal()"><i class="fas fa-plus"></i> Create Post</button>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search tasks by title, category..." oninput="filterTasks()">
+    </div>
+    <select class="filter-select" id="priorityFilter" onchange="filterTasks()">
+      <option value="">All Priorities</option>
+      <option value="high">High Priority</option>
+      <option value="med">Medium Priority</option>
+      <option value="low">Low Priority</option>
+    </select>
+    <select class="filter-select" id="categoryFilter" onchange="filterTasks()">
+      <option value="">All Categories</option>
+      <option value="Food Relief">Food Relief</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="Disaster Response">Disaster Response</option>
+      <option value="Environment">Environment</option>
+      <option value="Education">Education</option>
+      <option value="Winter Relief">Winter Relief</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <!-- Tasks Grid -->
+  <div class="tasks-grid" id="tasksGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted)">
+      <i class="fas fa-spinner fa-spin" style="font-size:2rem"></i>
+      <div style="margin-top:1rem">Loading tasks…</div>
+    </div>
+  </div>
+</main>
+
+<!-- ── Create / Edit Post Modal ── -->
+<div class="modal-overlay" id="createModal" onclick="closeModalOutside(event,'createModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="createModalTitle"><i class="fas fa-plus-circle" style="color:var(--bg1);margin-right:.5rem"></i>Create New Post</div>
+      <button class="modal-close" onclick="closeModal('createModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="formAlertBox"></div>
+    <div class="mfield">
+      <label>Task Title <span style="color:var(--bg1)">*</span></label>
+      <input type="text" id="f_title" placeholder="e.g. Food Distribution Drive – South Kolkata" required>
+    </div>
+    <div class="field-row-2">
+      <div class="mfield">
+        <label>Category <span style="color:var(--bg1)">*</span></label>
+        <select id="f_category">
+          <option value="">Select category</option>
+          <option>Food Relief</option><option>Healthcare</option><option>Disaster Response</option>
+          <option>Environment</option><option>Education</option><option>Winter Relief</option><option>Other</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Priority</label>
+        <select id="f_priority">
+          <option value="med">Medium</option><option value="high">High</option><option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="mfield">
+      <label>Description <span style="color:var(--bg1)">*</span></label>
+      <textarea id="f_description" placeholder="Describe the task, goals, and what volunteers need to do..."></textarea>
+    </div>
+    <div class="field-row-2">
+      <div class="mfield">
+        <label>Location</label>
+        <input type="text" id="f_location" placeholder="e.g. Kolkata, West Bengal">
+      </div>
+      <div class="mfield">
+        <label>Deadline</label>
+        <input type="date" id="f_deadline">
+      </div>
+    </div>
+    <div class="field-row-2">
+      <div class="mfield">
+        <label>Volunteers Needed</label>
+        <input type="number" id="f_volunteers" placeholder="e.g. 10" min="1">
+      </div>
+      <div class="mfield">
+        <label>Status</label>
+        <select id="f_status">
+          <option value="pending">Pending</option><option value="ongoing">Ongoing</option><option value="completed">Completed</option>
+        </select>
+      </div>
+    </div>
+    <div class="mfield">
+      <label>Skills Required (optional)</label>
+      <input type="text" id="f_skills" placeholder="e.g. First Aid, Driving, Cooking">
+    </div>
+    <div class="mfield">
+      <label>Additional Notes</label>
+      <textarea id="f_notes" style="min-height:60px" placeholder="Any extra info for volunteers..."></textarea>
+    </div>
+    <button class="submit-btn" id="createSubmitBtn" onclick="submitTask()">
+      <i class="fas fa-cloud-upload-alt" style="margin-right:.4rem"></i>Publish Post
+    </button>
+  </div>
+</div>
+
+<!-- ── Task Detail Modal ── -->
+<div class="modal-overlay" id="detailModal" onclick="closeModalOutside(event,'detailModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-clipboard-list" style="color:var(--bg1);margin-right:.5rem"></i>Task Details</div>
+      <button class="modal-close" onclick="closeModal('detailModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="taskDetailContent"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1.2rem">
+      <button onclick="editCurrentTask()" style="flex:1;padding:.75rem;border:2px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font-weight:700;cursor:pointer;font-size:.9rem;transition:all .2s" onmouseover="this.style.borderColor='var(--bg1)'" onmouseout="this.style.borderColor='var(--border)'">
+        <i class="fas fa-edit" style="margin-right:.4rem"></i>Edit Task
+      </button>
+      <button onclick="deleteCurrentTask()" style="flex:1;padding:.75rem;border:2px solid #e74c3c;border-radius:11px;background:transparent;color:#e74c3c;font-weight:700;cursor:pointer;font-size:.9rem">
+        <i class="fas fa-trash" style="margin-right:.4rem"></i>Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert toast -->
+<div class="alert-toast" id="alertToast"></div>
+
+<script>
+// Auth: login on port 5001, task data on port 5002, community on port 5003
+const AUTH_URL = 'https://nexus-kind-auth-3vdl.onrender.com/api';
+const NGO_URL  = 'https://nexus-kind-ngo.onrender.com/api/ngo';
+const COMM_URL = 'https://nexus-kind-community.onrender.com/api/community';
+let allTasks=[];
+let currentTab='all';
+let editingId=null;
+let viewingTask=null;
+
+// ── Init ──────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  // Auth guard
+  if(!sessionStorage.getItem('token')){ window.location.href='login_2.html'; return; }
+
+  if(sessionStorage.getItem('theme')==='dark'){
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('themeIcon').className='fas fa-sun';
+  }
+  try{const u=JSON.parse(sessionStorage.getItem('user')||'{}');const n=u.organizationName||u.username||'My NGO';document.getElementById('ngoDisplayName').textContent=n;document.getElementById('avatarInitials').textContent=n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}catch(e){}
+
+  // check URL param
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('action')==='create') setTimeout(openCreateModal,400);
+
+  loadTasks();
+});
+
+// ── Load Tasks from ngo_server.js (port 5002) ────────────────────────
+async function loadTasks(){
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const res=await fetch(`${NGO_URL}/tasks`,{headers:{'Authorization':'Bearer '+token}});
+    if(res.ok){
+      allTasks=await res.json();
+    } else {
+      console.warn('Tasks API error',res.status);
+      allTasks=[];
+    }
+  }catch(e){
+    console.warn('Could not reach ngo_server:',e.message);
+    allTasks=[];
+  }
+  updateCounts();
+  renderGrid();
+}
+
+function getMockTasks(){
+  // No mock data — all tasks come from MongoDB via ngo_server.js
+  return [];
+}
+
+// ── Counts & Tabs ────────────────────────────────────────────────────
+function updateCounts(){
+  const c={all:allTasks.length,ongoing:allTasks.filter(t=>t.status==='ongoing').length,completed:allTasks.filter(t=>t.status==='completed').length,pending:allTasks.filter(t=>t.status==='pending').length};
+  Object.keys(c).forEach(k=>{const el=document.getElementById('cnt-'+k);if(el)el.textContent=c[k];});
+}
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab-pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  filterTasks();
+}
+
+function filterTasks(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const pri=document.getElementById('priorityFilter').value;
+  const cat=document.getElementById('categoryFilter').value;
+  let filtered=allTasks.filter(t=>{
+    if(currentTab!=='all'&&t.status!==currentTab)return false;
+    if(q&&!t.title.toLowerCase().includes(q)&&!(t.category||'').toLowerCase().includes(q))return false;
+    if(pri&&t.priority!==pri)return false;
+    if(cat&&t.category!==cat)return false;
+    return true;
+  });
+  renderGrid(filtered);
+}
+
+// ── Render Grid ───────────────────────────────────────────────────────
+// NOTE: task IDs are MongoDB _id strings (24-char hex). We use data-id attributes
+// instead of inline onclick(id) to safely pass string IDs without JS injection risk.
+function renderGrid(tasks=allTasks){
+  const grid=document.getElementById('tasksGrid');
+  if(!tasks.length){
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1">
+      <i class="fas fa-clipboard-list"></i>
+      <h3>No tasks found</h3>
+      <p>Try adjusting your filters or <button onclick="openCreateModal()" style="border:none;background:none;color:var(--bg1);font-weight:700;cursor:pointer;font-size:.85rem">create a new post</button>.</p>
+    </div>`;
+    return;
+  }
+  const priClass={high:'high',med:'med',medium:'med',low:'low'};
+  grid.innerHTML=tasks.map(t=>{
+    const tid = t._id || t.id;  // always use MongoDB _id string
+    return `
+    <div class="task-card" data-id="${tid}" data-action="detail">
+      <div class="task-card-header ${priClass[t.priority]||'med'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+          <div>
+            <div class="tc-category">${t.category||'General'}</div>
+            <div class="tc-title">${t.title}</div>
+          </div>
+          <span class="priority-badge ${priClass[t.priority]||'med'}">${t.priority==='med'?'Medium':t.priority==='high'?'High':'Low'}</span>
+        </div>
+      </div>
+      <div class="task-card-body">
+        <div class="tc-desc">${(t.description||'No description provided.').slice(0,110)}${(t.description||'').length>110?'…':''}</div>
+        <div class="tc-meta">
+          ${t.location?`<div class="tc-chip"><i class="fas fa-map-marker-alt"></i>${t.location}</div>`:''}
+          ${t.deadline?`<div class="tc-chip"><i class="fas fa-calendar"></i>${t.deadline}</div>`:''}
+          ${t.volunteersNeeded?`<div class="tc-chip"><i class="fas fa-users"></i>${t.assignedTo||0}/${t.volunteersNeeded} volunteers</div>`:''}
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="status-badge ${t.status||'pending'}">${t.status||'pending'}</span>
+        <div class="tc-actions">
+          <div class="tc-action-btn" data-id="${tid}" data-action="edit" title="Edit"><i class="fas fa-edit"></i></div>
+          <div class="tc-action-btn" data-id="${tid}" data-action="toggle" title="Toggle status"><i class="fas fa-sync-alt"></i></div>
+          <div class="tc-action-btn danger" data-id="${tid}" data-action="delete" title="Delete"><i class="fas fa-trash"></i></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Single delegated listener on the grid — handles all card actions
+  grid.onclick = (e) => {
+    // action buttons first (stopPropagation equivalent)
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (action === 'edit')   { e.stopPropagation(); openEditModal(id); }
+    if (action === 'toggle') { e.stopPropagation(); toggleStatus(id); }
+    if (action === 'delete') { e.stopPropagation(); deleteTask(id); }
+    if (action === 'detail') { openDetail(id); }
+  };
+}
+
+// ── Create / Edit ─────────────────────────────────────────────────────
+function openCreateModal(){
+  editingId=null;
+  document.getElementById('createModalTitle').innerHTML='<i class="fas fa-plus-circle" style="color:var(--bg1);margin-right:.5rem"></i>Create New Post';
+  document.getElementById('createSubmitBtn').innerHTML='<i class="fas fa-cloud-upload-alt" style="margin-right:.4rem"></i>Publish Post';
+  ['f_title','f_description','f_location','f_skills','f_notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_category').value='';
+  document.getElementById('f_priority').value='med';
+  document.getElementById('f_status').value='pending';
+  document.getElementById('f_deadline').value='';
+  document.getElementById('f_volunteers').value='';
+  document.getElementById('formAlertBox').innerHTML='';
+  document.getElementById('createModal').classList.add('show');
+}
+
+function openEditModal(id){
+  const t=allTasks.find(x=>(x._id||x.id)===id);if(!t)return;
+  editingId=id;
+  document.getElementById('createModalTitle').innerHTML='<i class="fas fa-edit" style="color:var(--bg1);margin-right:.5rem"></i>Edit Task';
+  document.getElementById('createSubmitBtn').innerHTML='<i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes';
+  document.getElementById('f_title').value=t.title||'';
+  document.getElementById('f_category').value=t.category||'';
+  document.getElementById('f_priority').value=t.priority||'med';
+  document.getElementById('f_description').value=t.description||'';
+  document.getElementById('f_location').value=t.location||'';
+  document.getElementById('f_deadline').value=t.deadline||'';
+  document.getElementById('f_volunteers').value=t.volunteersNeeded||'';
+  document.getElementById('f_status').value=t.status||'pending';
+  document.getElementById('f_skills').value=t.skills||'';
+  document.getElementById('f_notes').value=t.notes||'';
+  document.getElementById('formAlertBox').innerHTML='';
+  document.getElementById('createModal').classList.add('show');
+}
+
+async function submitTask(){
+  const title=document.getElementById('f_title').value.trim();
+  const category=document.getElementById('f_category').value;
+  const description=document.getElementById('f_description').value.trim();
+  if(!title||!description||!category){
+    document.getElementById('formAlertBox').innerHTML='<div style="padding:.6rem 1rem;background:rgba(168,34,34,.1);color:var(--bg1);border-radius:9px;font-size:.85rem;font-weight:600;margin-bottom:.8rem"><i class="fas fa-exclamation-circle"></i> Please fill in all required fields.</div>';
+    return;
+  }
+  const payload={
+    title,category,
+    priority:document.getElementById('f_priority').value,
+    description,
+    location:document.getElementById('f_location').value.trim(),
+    deadline:document.getElementById('f_deadline').value,
+    volunteersNeeded:parseInt(document.getElementById('f_volunteers').value)||0,
+    status:document.getElementById('f_status').value,
+    skills:document.getElementById('f_skills').value.trim(),
+    notes:document.getElementById('f_notes').value.trim(),
+    assignedTo:0,
+    date:new Date().toISOString().split('T')[0],
+  };
+  const btn=document.getElementById('createSubmitBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:.4rem"></i>Saving…';
+
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const url=editingId?`${NGO_URL}/tasks/${editingId}`:`${NGO_URL}/tasks`;
+    const method=editingId?'PUT':'POST';
+    const res=await fetch(url,{method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(res.ok){
+      closeModal('createModal');
+      await loadTasks();   // reload fresh from DB so IDs and data are accurate
+      toast(editingId?'Task updated!':'Post published successfully!','success');
+    }else{
+      document.getElementById('formAlertBox').innerHTML=`<div style="padding:.6rem 1rem;background:rgba(168,34,34,.1);color:var(--bg1);border-radius:9px;font-size:.85rem;margin-bottom:.8rem">${data.message||'Save failed.'}</div>`;
+    }
+  }catch(err){
+    document.getElementById('formAlertBox').innerHTML=`<div style="padding:.6rem 1rem;background:rgba(168,34,34,.1);color:var(--bg1);border-radius:9px;font-size:.85rem;margin-bottom:.8rem">Cannot reach server. Is ngo_server.js running on port 5002?</div>`;
+  }finally{btn.disabled=false;btn.innerHTML=editingId?'<i class="fas fa-save" style="margin-right:.4rem"></i>Save Changes':'<i class="fas fa-cloud-upload-alt" style="margin-right:.4rem"></i>Publish Post';}
+}
+
+// ── Detail Modal ──────────────────────────────────────────────────────
+function openDetail(id){
+  const t=allTasks.find(x=>(x._id||x.id)===id);if(!t)return;
+  viewingTask=t;
+  const priMap={high:'High',med:'Medium',low:'Low'};
+  document.getElementById('taskDetailContent').innerHTML=`
+    <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap">
+      <span class="status-badge ${t.status}">${t.status}</span>
+      <span class="priority-badge ${t.priority||'med'}">${priMap[t.priority]||'Medium'} Priority</span>
+      <span style="font-size:.75rem;color:var(--muted);background:var(--body-bg);padding:.25rem .7rem;border-radius:8px;font-weight:600">${t.category||'General'}</span>
+    </div>
+    <div style="font-size:1.15rem;font-weight:800;color:var(--text);margin-bottom:1.2rem;line-height:1.3">${t.title}</div>
+    <div class="detail-section"><div class="detail-label">Description</div><div class="detail-value" style="line-height:1.6">${t.description||'No description.'}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem">
+      <div class="detail-section"><div class="detail-label"><i class="fas fa-map-marker-alt" style="color:var(--bg1)"></i> Location</div><div class="detail-value">${t.location||'Not set'}</div></div>
+      <div class="detail-section"><div class="detail-label"><i class="fas fa-calendar" style="color:var(--bg1)"></i> Deadline</div><div class="detail-value">${t.deadline||'Not set'}</div></div>
+      <div class="detail-section"><div class="detail-label"><i class="fas fa-users" style="color:var(--bg1)"></i> Volunteers</div><div class="detail-value">${t.assignedTo||0} assigned / ${t.volunteersNeeded||'—'} needed</div></div>
+      <div class="detail-section"><div class="detail-label"><i class="fas fa-star" style="color:var(--bg1)"></i> Skills Needed</div><div class="detail-value">${t.skills||'None specified'}</div></div>
+    </div>
+    ${t.notes?`<div class="detail-section" style="margin-top:1rem;padding:.8rem;background:rgba(168,34,34,.05);border-radius:10px;border-left:3px solid var(--bg1)"><div class="detail-label">Notes</div><div class="detail-value">${t.notes}</div></div>`:''}
+    <div id="applicantsSection" style="margin-top:1.5rem">
+      <button onclick="loadApplicants('${id}')" style="width:100%;padding:.7rem;border:1.5px solid var(--bg1);border-radius:10px;background:transparent;color:var(--bg1);font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(168,34,34,.08)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-users" style="margin-right:.4rem"></i>View Applicants
+      </button>
+      <div id="applicantsList" style="margin-top:1rem"></div>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('show');
+}
+
+async function loadApplicants(taskId){
+  const container=document.getElementById('applicantsList');
+  container.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)"><i class="fas fa-spinner fa-spin"></i> Loading…</div>';
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const res=await fetch(`${COMM_URL}/task/${taskId}/applicants`,{headers:{'Authorization':'Bearer '+token}});
+    if(!res.ok){const e=await res.json().catch(()=>({}));container.innerHTML=`<p style="color:#e74c3c;font-size:.85rem">${e.message||'Error loading applicants'}</p>`;return;}
+    const apps=await res.json();
+    if(!apps.length){container.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center;padding:.5rem 0">No applicants yet.</p>';return;}
+    container.innerHTML=`<div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.6rem">Applicants (${apps.length})</div>`
+      +apps.map(a=>{
+        const u=a.user||{};
+        const name=u.fullName||u.username||'Unknown';
+        const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const statusColor=a.status==='accepted'?'#27ae60':a.status==='rejected'?'#e74c3c':'#f39c12';
+        return`<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border:1.5px solid var(--border);border-radius:10px;margin-bottom:.5rem;background:var(--card)">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.8rem;flex-shrink:0">${init}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:.88rem;color:var(--text)">${name}</div>
+            <div style="font-size:.73rem;color:var(--muted)">@${u.username||''} ${u.location?'· '+u.location:''}</div>
+            ${u.skills?`<div style="font-size:.73rem;color:var(--muted)">Skills: ${u.skills}</div>`:''}
+            ${a.message?`<div style="font-size:.75rem;font-style:italic;color:var(--text);margin-top:.2rem">"${a.message}"</div>`:''}
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;flex-shrink:0">
+            <span style="font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:6px;background:${statusColor}22;color:${statusColor}">${a.status}</span>
+            ${a.status==='pending'?`
+              <div style="display:flex;gap:.3rem">
+                <button onclick="resolveApp('${a._id}','accept')" style="padding:.3rem .65rem;border:none;border-radius:7px;background:#27ae60;color:#fff;font-size:.72rem;font-weight:700;cursor:pointer">Accept</button>
+                <button onclick="resolveApp('${a._id}','reject')" style="padding:.3rem .65rem;border:1.5px solid #e74c3c;border-radius:7px;background:transparent;color:#e74c3c;font-size:.72rem;font-weight:700;cursor:pointer">Reject</button>
+              </div>`:''}
+          </div>
+        </div>`;
+      }).join('');
+  }catch(e){
+    container.innerHTML='<p style="color:#e74c3c;font-size:.85rem">community_server.js not reachable on port 5003.</p>';
+  }
+}
+
+async function resolveApp(appId, action){
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const res=await fetch(`${COMM_URL}/task-application/${appId}/${action}`,{method:'PATCH',headers:{'Authorization':'Bearer '+token}});
+    if(res.ok){
+      const data=await res.json();
+      // Update assignedTo in local task list so card counter refreshes
+      if(action==='accept'&&data.newAssignedTo!=null&&viewingTask){
+        viewingTask.assignedTo=data.newAssignedTo;
+        const localTask=allTasks.find(x=>(x._id||x.id)===(viewingTask._id||viewingTask.id));
+        if(localTask)localTask.assignedTo=data.newAssignedTo;
+        renderTasks();
+      }
+      showToast(action==='accept'?'Applicant accepted!':'Application rejected.', action==='accept'?'success':'info');
+      // Refresh applicant list in modal
+      if(viewingTask)loadApplicants(viewingTask._id||viewingTask.id);
+    }else{
+      const err=await res.json().catch(()=>({}));
+      showToast(err.message||'Error updating application.','error');
+    }
+  }catch(e){showToast('Server error.','error');}
+}
+
+function editCurrentTask(){closeModal('detailModal');if(viewingTask)openEditModal(viewingTask._id||viewingTask.id);}
+function deleteCurrentTask(){if(viewingTask)deleteTask(viewingTask._id||viewingTask.id);closeModal('detailModal');}
+
+// ── Task Actions ──────────────────────────────────────────────────────
+async function toggleStatus(id){
+  const t=allTasks.find(x=>(x._id||x.id)===id);if(!t)return;
+  const cycle={pending:'ongoing',ongoing:'completed',completed:'pending'};
+  const newStatus=cycle[t.status]||'pending';
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const res=await fetch(`${NGO_URL}/tasks/${id}`,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({status:newStatus})
+    });
+    if(res.ok){
+      await loadTasks();  // reload from DB so UI reflects truth
+      toast(`Status changed to "${newStatus}"`, 'success');
+    } else {
+      toast('Failed to update status','error');
+    }
+  }catch(e){
+    toast('Cannot reach server','error');
+  }
+}
+
+async function deleteTask(id){
+  if(!confirm('Delete this task? This cannot be undone.'))return;
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    await fetch(`${NGO_URL}/tasks/${id}`,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
+    await loadTasks();   // refresh from DB
+    toast('Task deleted.','info');
+  }catch(e){
+    // fallback: remove locally
+    allTasks=allTasks.filter(t=>t.id!==id);
+    updateCounts();filterTasks();
+    toast('Task deleted (offline).','info');
+  }
+}
+
+// syncTask removed — toggleStatus now handles its own PATCH directly
+
+// ── Utilities ─────────────────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function closeModalOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+function toast(msg,type='success'){
+  const el=document.getElementById('alertToast');
+  el.style.color=type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.style.borderColor=type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.innerHTML=`<i class="fas fa-${type==='success'?'check-circle':type==='info'?'info-circle':'exclamation-circle'}" style="margin-right:.4rem"></i>${msg}`;
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none',3000);
+}
+
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  sessionStorage.setItem('theme',dark?'light':'dark');
+  document.getElementById('themeIcon').className=dark?'fas fa-moon':'fas fa-sun';
+}
+
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function openProfile(){toast('Profile page coming soon!','info');}
+function openSettings(){toast('Settings modal coming soon!','info');}
+function logout(){sessionStorage.clear();window.location.href='login_2.html';}
+</script>
+</body>
+</html>

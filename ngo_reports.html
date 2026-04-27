@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Reports</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--sidebar:#fff;--sidebar-w:260px;--topbar-h:68px;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--sidebar:#0f1f3d;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.07);transition:transform .3s}
+.sidebar-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem}
+.sidebar-logo .logo-icon{font-size:1.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo h2{font-size:1.25rem;font-weight:800;color:var(--text);letter-spacing:-.01em}
+.sidebar-logo p{font-size:.68rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:.05rem}
+.sidebar-nav{flex:1;padding:1.2rem 0;overflow-y:auto}
+.nav-section{padding:.4rem 1.5rem .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.5rem;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;border-left:3px solid transparent;transition:all .2s;cursor:pointer;position:relative}
+.nav-item:hover{background:rgba(168,34,34,.06);color:var(--bg1);border-left-color:rgba(168,34,34,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(168,34,34,.12),rgba(118,75,162,.06));color:var(--bg1);border-left-color:var(--bg1)}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.nav-badge{margin-left:auto;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:20px;min-width:20px;text-align:center}
+.sidebar-bottom{padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.ngo-profile-mini{display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:12px;cursor:pointer;transition:background .2s}
+.ngo-profile-mini:hover{background:rgba(168,34,34,.06)}
+.ngo-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem;flex-shrink:0}
+.ngo-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.ngo-role{font-size:.72rem;color:var(--muted)}
+
+/* ── Topbar ── */
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-left{flex:1;display:flex;align-items:center;gap:1rem}
+.page-title{font-size:1.2rem;font-weight:800;color:var(--text)}
+.page-subtitle{font-size:.8rem;color:var(--muted);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem;position:relative}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.06)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--bg1);border-radius:50%;border:1.5px solid var(--card)}
+.hamburger{display:none;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+
+/* ── Dropdown ── */
+.dropdown-panel{position:absolute;top:calc(100% + 8px);right:0;background:var(--card);border:1px solid var(--border);border-radius:14px;min-width:200px;box-shadow:0 10px 40px rgba(0,0,0,.12);z-index:999;display:none;overflow:hidden}
+.dropdown-panel.show{display:block;animation:fadeDown .2s ease}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.dp-item{display:flex;align-items:center;gap:.75rem;padding:.8rem 1.1rem;color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s}
+.dp-item:hover{background:rgba(168,34,34,.06);color:var(--bg1)}
+.dp-item i{width:16px;text-align:center;color:var(--muted);font-size:.85rem}
+.dp-divider{height:1px;background:var(--border);margin:.2rem 0}
+
+/* ── Main Content ── */
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2rem;min-height:calc(100vh - var(--topbar-h))}
+
+/* ── Reports Header ── */
+.reports-header{background:linear-gradient(135deg,var(--bg1),var(--bg2));border-radius:20px;padding:1.8rem 2rem;margin-bottom:2rem;position:relative;overflow:hidden;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.reports-header::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:rgba(255,255,255,.08);border-radius:50%}
+.reports-header::after{content:'';position:absolute;bottom:-40px;right:80px;width:100px;height:100px;background:rgba(255,255,255,.05);border-radius:50%}
+.rh-left{position:relative;z-index:1}
+.rh-title{font-size:1.4rem;font-weight:800;margin-bottom:.3rem}
+.rh-sub{font-size:.88rem;opacity:.85}
+.rh-right{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.rh-btn{padding:.6rem 1.2rem;border-radius:10px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem;border:none;white-space:nowrap}
+.rh-btn.primary{background:#fff;color:var(--bg1)}
+.rh-btn.primary:hover{background:rgba(255,255,255,.9);transform:translateY(-1px)}
+.rh-btn.secondary{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.35);backdrop-filter:blur(8px)}
+.rh-btn.secondary:hover{background:rgba(255,255,255,.28)}
+
+/* ── Stat Cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border-radius:18px;padding:1.4rem 1.5rem;border:1px solid var(--border);position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.stat-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08}
+.stat-card.red::after{background:var(--bg1)}
+.stat-card.purple::after{background:#764ba2}
+.stat-card.green::after{background:#27ae60}
+.stat-card.blue::after{background:#2980b9}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem}
+.stat-icon.red{background:rgba(168,34,34,.12);color:var(--bg1)}
+.stat-icon.purple{background:rgba(118,75,162,.12);color:#764ba2}
+.stat-icon.green{background:rgba(39,174,96,.12);color:#27ae60}
+.stat-icon.blue{background:rgba(41,128,185,.12);color:#2980b9}
+.stat-val{font-size:1.9rem;font-weight:800;color:var(--text);line-height:1}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:.3rem;font-weight:500}
+.stat-change{font-size:.75rem;font-weight:700;margin-top:.5rem}
+.stat-change.up{color:#27ae60}
+.stat-change.neutral{color:var(--muted)}
+
+/* ── Controls ── */
+.controls-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;flex-wrap:wrap}
+.period-tabs{display:flex;gap:.4rem;background:var(--card);border-radius:12px;padding:.4rem;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.period-tab{padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.83rem;cursor:pointer;color:var(--muted);border:none;background:transparent;transition:all .2s}
+.period-tab.active{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;box-shadow:0 4px 12px rgba(168,34,34,.25)}
+.export-btn{display:flex;align-items:center;gap:.5rem;padding:.58rem 1.1rem;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;margin-left:auto}
+.export-btn:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.04)}
+.export-btn i{font-size:.8rem}
+
+/* ── Card Base ── */
+.dash-card{background:var(--card);border-radius:18px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.05);overflow:hidden}
+.dash-card-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.dash-card-title{font-size:1rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.dash-card-body{padding:1.4rem 1.5rem}
+.card-action{font-size:.8rem;color:var(--bg1);font-weight:600;cursor:pointer;background:none;border:none;padding:0;display:flex;align-items:center;gap:.3rem}
+.card-action:hover{text-decoration:underline}
+
+/* ── Chart Grid ── */
+.charts-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
+.charts-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
+.charts-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
+
+/* ── Chart Containers ── */
+.chart-wrap{position:relative;width:100%;height:240px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+.chart-wrap.tall{height:280px}
+.chart-wrap.short{height:200px}
+
+/* ── Donut Stats ── */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.donut-legend{width:100%;display:flex;flex-direction:column;gap:.6rem}
+.legend-item{display:flex;align-items:center;justify-content:space-between;font-size:.82rem}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:.5rem}
+.legend-label{display:flex;align-items:center;color:var(--muted);font-weight:500;flex:1}
+.legend-val{font-weight:700;color:var(--text)}
+
+/* ── Progress Mini ── */
+.prog-mini-row{display:flex;align-items:center;gap:.9rem;padding:.7rem 0;border-bottom:1px solid var(--border)}
+.prog-mini-row:last-child{border-bottom:none}
+.prog-mini-label{font-size:.83rem;font-weight:600;color:var(--text);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-mini-bar{flex:1;height:8px;background:var(--border);border-radius:8px;overflow:hidden}
+.prog-mini-fill{height:100%;border-radius:8px;transition:width 1.2s ease}
+.prog-mini-pct{font-size:.8rem;font-weight:700;color:var(--bg1);width:36px;text-align:right;flex-shrink:0}
+
+/* ── Table ── */
+.report-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.report-table th{padding:.75rem 1rem;text-align:left;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
+.report-table td{padding:.8rem 1rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.report-table tr:last-child td{border-bottom:none}
+.report-table tr:hover td{background:rgba(168,34,34,.03)}
+.tbl-badge{font-size:.72rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;display:inline-flex;align-items:center;gap:.3rem}
+.tbl-badge.completed{background:rgba(39,174,96,.12);color:#27ae60}
+.tbl-badge.ongoing{background:rgba(41,128,185,.12);color:#2980b9}
+.tbl-badge.pending{background:rgba(243,156,18,.12);color:#e67e22}
+.tbl-badge.high{background:rgba(168,34,34,.1);color:var(--bg1)}
+.tbl-badge.med{background:rgba(243,156,18,.1);color:#e67e22}
+.tbl-badge.low{background:rgba(39,174,96,.1);color:#27ae60}
+.tbl-badge.admin{background:rgba(168,34,34,.12);color:var(--bg1)}
+.tbl-badge.volunteer{background:rgba(39,174,96,.12);color:#27ae60}
+.tbl-badge.donor{background:rgba(41,128,185,.12);color:#2980b9}
+
+/* ── Insight Cards ── */
+.insights-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:1.4rem}
+.insight-card{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:1.3rem;box-shadow:0 2px 10px rgba(0,0,0,.04);display:flex;gap:1rem;align-items:flex-start}
+.insight-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.insight-icon.green{background:rgba(39,174,96,.12);color:#27ae60}
+.insight-icon.red{background:rgba(168,34,34,.12);color:var(--bg1)}
+.insight-icon.blue{background:rgba(41,128,185,.12);color:#2980b9}
+.insight-icon.orange{background:rgba(243,156,18,.12);color:#e67e22}
+.insight-icon.purple{background:rgba(118,75,162,.12);color:#764ba2}
+.insight-title{font-size:.83rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.insight-desc{font-size:.77rem;color:var(--muted);line-height:1.45}
+.insight-val{font-size:1.1rem;font-weight:800;color:var(--text);margin-top:.3rem}
+
+/* ── Empty / loading ── */
+.loading-row{text-align:center;padding:2rem;color:var(--muted);font-size:.88rem}
+.loading-row i{margin-right:.4rem}
+
+/* ── Alert ── */
+#alertBanner{display:none;margin-bottom:1rem;padding:.75rem 1rem;border-radius:10px;font-size:.88rem;font-weight:600}
+
+/* ── Print / Export Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:1rem}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border-radius:22px;padding:2rem;max-width:480px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.22);animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--text)}
+.modal-close{border:none;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--body-bg)}
+.form-group{margin-bottom:1.2rem}
+.form-label{font-size:.83rem;font-weight:700;color:var(--text);margin-bottom:.5rem;display:block}
+.form-control{width:100%;padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--body-bg);color:var(--text);font-size:.88rem;outline:none;transition:border-color .2s}
+.form-control:focus{border-color:var(--bg1)}
+.export-options{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem}
+.export-opt{padding:1rem;border:2px solid var(--border);border-radius:14px;cursor:pointer;text-align:center;transition:all .2s}
+.export-opt:hover,.export-opt.selected{border-color:var(--bg1);background:rgba(168,34,34,.05)}
+.export-opt i{font-size:1.6rem;margin-bottom:.4rem;display:block}
+.export-opt i.pdf-icon{color:#e74c3c}
+.export-opt i.csv-icon{color:#27ae60}
+.export-opt i.png-icon{color:#2980b9}
+.export-opt i.json-icon{color:#764ba2}
+.export-opt-label{font-size:.82rem;font-weight:700;color:var(--text)}
+.export-opt-desc{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.modal-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.btn-cancel{padding:.6rem 1.2rem;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:600;font-size:.88rem;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{background:var(--body-bg)}
+.btn-primary{padding:.6rem 1.3rem;border:none;border-radius:10px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:.4rem}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(168,34,34,.3)}
+
+/* ── Summary boxes ── */
+.summary-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.4rem}
+.summary-box{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:1.1rem 1.2rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.sb-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem}
+.sb-val{font-size:1.5rem;font-weight:800;color:var(--text);line-height:1}
+.sb-sub{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+
+/* ── Responsive ── */
+@media(max-width:1100px){.charts-grid,.charts-grid-3{grid-template-columns:1fr 1fr}.insights-row{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid,.charts-grid-3,.charts-grid-2{grid-template-columns:1fr}.insights-row{grid-template-columns:1fr}.summary-boxes{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main,.topbar{margin-left:0;left:0}.topbar{left:0}.hamburger{display:flex!important}}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div>
+      <h2>NexusKind</h2>
+      <p>NGO Portal</p>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-item" href="ngo_dashboard.html">
+      <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <div class="nav-section">Operations</div>
+    <a class="nav-item" href="ngo_tasks.html">
+      <i class="fas fa-tasks"></i> Tasks
+      <span class="nav-badge" id="taskBadge">—</span>
+    </a>
+    <a class="nav-item" href="ngo_members.html">
+      <i class="fas fa-users"></i> Members
+      <span class="nav-badge" id="memberBadge">—</span>
+    </a>
+    <div class="nav-item" onclick="showAlert('Donations module coming soon!','info')">
+      <i class="fas fa-hand-holding-heart"></i> Donations
+    </div>
+    <div class="nav-item active">
+      <i class="fas fa-chart-bar"></i> Reports
+    </div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" onclick="showAlert('Profile coming soon!','info')">
+      <i class="fas fa-user-circle"></i> Profile
+    </div>
+    <div class="nav-item" onclick="showAlert('Settings coming soon!','info')">
+      <i class="fas fa-cog"></i> Settings
+    </div>
+    <div class="nav-item" onclick="logout()" style="color:#c0392b">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="ngo-profile-mini">
+      <div class="ngo-avatar" id="avatarInitials">NK</div>
+      <div>
+        <div class="ngo-name" id="ngoDisplayName">My NGO</div>
+        <div class="ngo-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" onclick="openSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="topbar-left">
+    <div>
+      <div class="page-title">Reports & Analytics</div>
+      <div class="page-subtitle">Track performance, engagement, and impact over time</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" style="position:relative" onclick="toggleDropdown('notifPanel')">
+      <i class="fas fa-bell"></i>
+      <div class="notif-dot"></div>
+      <div class="dropdown-panel" id="notifPanel">
+        <div style="padding:.9rem 1.1rem;border-bottom:1px solid var(--border);font-weight:700;font-size:.9rem">Notifications</div>
+        <div class="dp-item"><i class="fas fa-user-plus"></i> New volunteer joined</div>
+        <div class="dp-item"><i class="fas fa-check-circle"></i> Task completed</div>
+        <div class="dp-divider"></div>
+        <div class="dp-item" style="justify-content:center;color:var(--bg1)">View all</div>
+      </div>
+    </div>
+    <div class="icon-btn" onclick="toggleTheme()">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+    <div class="icon-btn" style="position:relative" onclick="toggleDropdown('profilePanel')">
+      <i class="fas fa-user-circle"></i>
+      <div class="dropdown-panel" id="profilePanel">
+        <div style="padding:.9rem 1.1rem;border-bottom:1px solid var(--border)">
+          <div style="font-weight:700;font-size:.9rem" id="profileName">My NGO</div>
+          <div style="font-size:.75rem;color:var(--muted)">Administrator</div>
+        </div>
+        <div class="dp-item" onclick="showAlert('Profile coming soon!','info')"><i class="fas fa-user"></i> View Profile</div>
+        <div class="dp-divider"></div>
+        <div class="dp-item" onclick="logout()" style="color:#c0392b"><i class="fas fa-sign-out-alt"></i> Logout</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main class="main">
+  <div id="alertBanner"></div>
+
+  <!-- Header Banner -->
+  <div class="reports-header">
+    <div class="rh-left">
+      <div class="rh-title"><i class="fas fa-chart-bar" style="margin-right:.5rem;opacity:.85"></i>Reports &amp; Analytics</div>
+      <div class="rh-sub">Comprehensive overview of your NGO's activities and impact</div>
+    </div>
+    <div class="rh-right">
+      <button class="rh-btn secondary" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+      <button class="rh-btn primary" onclick="openExportModal()"><i class="fas fa-download"></i> Export Report</button>
+    </div>
+  </div>
+
+  <!-- Period tabs + export -->
+  <div class="controls-row">
+    <div class="period-tabs">
+      <button class="period-tab active" onclick="setPeriod(this,'7d')">7 Days</button>
+      <button class="period-tab" onclick="setPeriod(this,'30d')">30 Days</button>
+      <button class="period-tab" onclick="setPeriod(this,'90d')">3 Months</button>
+      <button class="period-tab" onclick="setPeriod(this,'1y')">1 Year</button>
+      <button class="period-tab" onclick="setPeriod(this,'all')">All Time</button>
+    </div>
+    <button class="export-btn" onclick="openExportModal()">
+      <i class="fas fa-file-export"></i> Export
+    </button>
+  </div>
+
+  <!-- KPI Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card red">
+      <div class="stat-icon red"><i class="fas fa-tasks"></i></div>
+      <div class="stat-val" id="kpiTasks">—</div>
+      <div class="stat-label">Total Tasks</div>
+      <div class="stat-change up" id="kpiTasksChange"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-val" id="kpiDone">—</div>
+      <div class="stat-label">Completed Tasks</div>
+      <div class="stat-change up" id="kpiDoneChange"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon purple"><i class="fas fa-users"></i></div>
+      <div class="stat-val" id="kpiMembers">—</div>
+      <div class="stat-label">Total Members</div>
+      <div class="stat-change up" id="kpiMembersChange"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon blue"><i class="fas fa-percentage"></i></div>
+      <div class="stat-val" id="kpiRate">—</div>
+      <div class="stat-label">Completion Rate</div>
+      <div class="stat-change neutral" id="kpiRateChange"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+    </div>
+  </div>
+
+  <!-- AI Insights Row -->
+  <div class="insights-row" id="insightsRow">
+    <!-- Populated by JS -->
+    <div class="insight-card"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading insights…</div></div>
+  </div>
+
+  <!-- Charts Row 1: Task Trend + Task Status Donut -->
+  <div class="charts-grid" style="margin-bottom:1.4rem">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-chart-line" style="color:var(--bg1)"></i> Task Activity Trend</div>
+        <span style="font-size:.78rem;color:var(--muted)" id="trendLabel">Last 7 days</span>
+      </div>
+      <div class="dash-card-body">
+        <div class="chart-wrap tall"><canvas id="taskTrendChart"></canvas></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-chart-pie" style="color:#764ba2"></i> Task Status</div>
+      </div>
+      <div class="dash-card-body">
+        <div class="donut-wrap">
+          <div class="chart-wrap" style="height:180px;width:180px"><canvas id="statusDonutChart"></canvas></div>
+          <div class="donut-legend" id="statusLegend"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2: Member roles + Priority dist + Category bar -->
+  <div class="charts-grid-3" style="margin-bottom:1.4rem">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-users" style="color:#764ba2"></i> Member Roles</div>
+      </div>
+      <div class="dash-card-body">
+        <div class="donut-wrap">
+          <div class="chart-wrap" style="height:160px;width:160px"><canvas id="roleDonutChart"></canvas></div>
+          <div class="donut-legend" id="roleLegend"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-flag" style="color:var(--bg1)"></i> Task Priority</div>
+      </div>
+      <div class="dash-card-body">
+        <div class="chart-wrap short"><canvas id="priorityBarChart"></canvas></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-tag" style="color:#2980b9"></i> By Category</div>
+      </div>
+      <div class="dash-card-body">
+        <div id="categoryBars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 3: Task completion by assignee + Member join trend -->
+  <div class="charts-grid-2" style="margin-bottom:1.4rem">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-user-check" style="color:#27ae60"></i> Completion by Assignee</div>
+      </div>
+      <div class="dash-card-body">
+        <div id="assigneeBars"></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-user-plus" style="color:#764ba2"></i> Member Growth</div>
+        <span style="font-size:.78rem;color:var(--muted)">Simulated over time</span>
+      </div>
+      <div class="dash-card-body">
+        <div class="chart-wrap"><canvas id="memberGrowthChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary boxes -->
+  <div class="summary-boxes" id="summaryBoxes">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Data Tables -->
+  <div class="charts-grid-2" style="margin-bottom:1.4rem">
+    <!-- Task Table -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-list-alt" style="color:var(--bg1)"></i> Task Report</div>
+        <a class="card-action" href="ngo_tasks.html"><i class="fas fa-external-link-alt" style="font-size:.7rem"></i> View All</a>
+      </div>
+      <div class="dash-card-body" style="padding:0;overflow-x:auto">
+        <table class="report-table" id="taskReportTable">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Assignee</th>
+            </tr>
+          </thead>
+          <tbody id="taskTableBody">
+            <tr><td colspan="5" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Member Table -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-title"><i class="fas fa-id-card" style="color:#764ba2"></i> Member Report</div>
+        <a class="card-action" href="ngo_members.html"><i class="fas fa-external-link-alt" style="font-size:.7rem"></i> View All</a>
+      </div>
+      <div class="dash-card-body" style="padding:0;overflow-x:auto">
+        <table class="report-table" id="memberReportTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Email</th>
+              <th>Tasks</th>
+            </tr>
+          </thead>
+          <tbody id="memberTableBody">
+            <tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── Export Modal ── -->
+<div class="modal-overlay" id="exportModal" onclick="closeExportModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-file-export" style="color:var(--bg1);margin-right:.5rem"></i>Export Report</div>
+      <button class="modal-close" onclick="document.getElementById('exportModal').classList.remove('show')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Report Title</div>
+      <input class="form-control" id="exportTitle" value="NexusKind NGO Report">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Choose Format</div>
+      <div class="export-options">
+        <div class="export-opt selected" onclick="selectExportFmt(this,'pdf')">
+          <i class="fas fa-file-pdf pdf-icon"></i>
+          <div class="export-opt-label">PDF</div>
+          <div class="export-opt-desc">Formatted report</div>
+        </div>
+        <div class="export-opt" onclick="selectExportFmt(this,'csv')">
+          <i class="fas fa-file-csv csv-icon"></i>
+          <div class="export-opt-label">CSV</div>
+          <div class="export-opt-desc">Spreadsheet data</div>
+        </div>
+        <div class="export-opt" onclick="selectExportFmt(this,'json')">
+          <i class="fas fa-file-code json-icon"></i>
+          <div class="export-opt-label">JSON</div>
+          <div class="export-opt-desc">Raw structured data</div>
+        </div>
+        <div class="export-opt" onclick="selectExportFmt(this,'print')">
+          <i class="fas fa-print png-icon"></i>
+          <div class="export-opt-label">Print</div>
+          <div class="export-opt-desc">Browser print dialog</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Include Sections</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+        <label style="display:flex;align-items:center;gap:.35rem;font-size:.83rem;cursor:pointer"><input type="checkbox" checked id="inclTasks"> Tasks</label>
+        <label style="display:flex;align-items:center;gap:.35rem;font-size:.83rem;cursor:pointer"><input type="checkbox" checked id="inclMembers"> Members</label>
+        <label style="display:flex;align-items:center;gap:.35rem;font-size:.83rem;cursor:pointer"><input type="checkbox" checked id="inclStats"> KPI Stats</label>
+        <label style="display:flex;align-items:center;gap:.35rem;font-size:.83rem;cursor:pointer"><input type="checkbox" checked id="inclInsights"> Insights</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="document.getElementById('exportModal').classList.remove('show')">Cancel</button>
+      <button class="btn-primary" onclick="doExport()"><i class="fas fa-download"></i> Export</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Theme & Sidebar helpers ─────────────────────────────────────────────
+(function(){
+  const t=sessionStorage.getItem('theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  document.addEventListener('DOMContentLoaded',()=>{
+    const ic=document.getElementById('themeIcon');
+    if(ic) ic.className=t==='dark'?'fas fa-sun':'fas fa-moon';
+  });
+})();
+
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  sessionStorage.setItem('theme',dark?'light':'dark');
+  document.getElementById('themeIcon').className=dark?'fas fa-moon':'fas fa-sun';
+  setTimeout(()=>location.reload(),300);
+}
+function toggleDropdown(id){
+  document.querySelectorAll('.dropdown-panel').forEach(p=>{if(p.id!==id)p.classList.remove('show');});
+  document.getElementById(id).classList.toggle('show');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.icon-btn'))
+    document.querySelectorAll('.dropdown-panel').forEach(p=>p.classList.remove('show'));
+});
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function showAlert(msg,type){
+  const el=document.getElementById('alertBanner');
+  el.style.display='block';
+  el.style.background=type==='info'?'rgba(41,128,185,.12)':type==='success'?'rgba(39,174,96,.12)':'rgba(168,34,34,.12)';
+  el.style.color=type==='info'?'#2980b9':type==='success'?'#27ae60':'#c0392b';
+  el.style.border=`1px solid ${type==='info'?'#2980b9':type==='success'?'#27ae60':'#c0392b'}`;
+  el.style.padding='.75rem 1rem';el.style.borderRadius='10px';el.style.fontWeight='600';el.style.fontSize='.88rem';
+  el.textContent=msg;
+  setTimeout(()=>el.style.display='none',3000);
+}
+function logout(){sessionStorage.clear();window.location.href='nexuskind_login_page.html';}
+
+// ── Data Fetching ───────────────────────────────────────────────────────
+let TASKS=[], MEMBERS=[], PERIOD='7d';
+
+function loadData(){
+  const tasks=JSON.parse(sessionStorage.getItem('ngo_tasks')||'[]');
+  const members=JSON.parse(sessionStorage.getItem('ngo_members')||'[]');
+  TASKS=tasks; MEMBERS=members;
+  // update sidebar badges
+  document.getElementById('taskBadge').textContent=tasks.length||'0';
+  document.getElementById('memberBadge').textContent=members.length||'0';
+  // update ngo name
+  const name=sessionStorage.getItem('ngo_name')||'My NGO';
+  document.getElementById('ngoDisplayName').textContent=name;
+  document.getElementById('avatarInitials').textContent=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  renderAll();
+}
+
+function renderAll(){
+  renderKPIs();
+  renderInsights();
+  renderTaskTrend();
+  renderStatusDonut();
+  renderRoleDonut();
+  renderPriorityBar();
+  renderCategoryBars();
+  renderAssigneeBars();
+  renderMemberGrowth();
+  renderSummaryBoxes();
+  renderTaskTable();
+  renderMemberTable();
+}
+
+// ── Period ──────────────────────────────────────────────────────────────
+function setPeriod(btn, p){
+  document.querySelectorAll('.period-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  PERIOD=p;
+  const labels={'7d':'Last 7 days','30d':'Last 30 days','90d':'Last 3 months','1y':'Last year','all':'All time'};
+  document.getElementById('trendLabel').textContent=labels[p]||'';
+  // Redraw charts that depend on period
+  renderTaskTrend();
+  renderMemberGrowth();
+}
+
+// ── KPIs ─────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const total=TASKS.length;
+  const done=TASKS.filter(t=>t.status==='completed').length;
+  const members=MEMBERS.length;
+  const rate=total?Math.round(done/total*100):0;
+  document.getElementById('kpiTasks').textContent=total||0;
+  document.getElementById('kpiDone').textContent=done||0;
+  document.getElementById('kpiMembers').textContent=members||0;
+  document.getElementById('kpiRate').textContent=rate+'%';
+  document.getElementById('kpiTasksChange').innerHTML=`<i class="fas fa-tasks"></i> ${TASKS.filter(t=>t.status==='ongoing').length} ongoing`;
+  document.getElementById('kpiDoneChange').innerHTML=`<i class="fas fa-arrow-up"></i> ${done} of ${total} complete`;
+  document.getElementById('kpiMembersChange').innerHTML=`<i class="fas fa-user"></i> ${MEMBERS.filter(m=>m.role==='volunteer').length} volunteers`;
+  document.getElementById('kpiRateChange').innerHTML=`<i class="fas fa-chart-line"></i> ${rate>=50?'On track':'Needs attention'}`;
+}
+
+// ── Insights ─────────────────────────────────────────────────────────────
+function renderInsights(){
+  const total=TASKS.length||1;
+  const done=TASKS.filter(t=>t.status==='completed').length;
+  const ongoing=TASKS.filter(t=>t.status==='ongoing').length;
+  const pending=TASKS.filter(t=>t.status==='pending').length;
+  const highPri=TASKS.filter(t=>t.priority==='high').length;
+  const vols=MEMBERS.filter(m=>m.role==='volunteer').length;
+  const donors=MEMBERS.filter(m=>m.role==='donor').length;
+  const rate=Math.round(done/total*100);
+
+  const insights=[
+    {icon:'fas fa-check-circle',cls:'green',title:'Completion Rate',desc:`${rate}% of all tasks have been completed. ${rate>=70?'Great progress!':rate>=40?'Keep pushing forward.':'Focus on closing open tasks.'}`,val:rate+'%'},
+    {icon:'fas fa-exclamation-triangle',cls:'red',title:'High Priority Tasks',desc:`${highPri} task${highPri!==1?'s':''} marked as high priority. ${highPri>0?'Ensure these are addressed promptly.':'No urgent tasks right now.'}`,val:highPri},
+    {icon:'fas fa-users',cls:'purple',title:'Volunteer Strength',desc:`${vols} active volunteer${vols!==1?'s':''} supporting ${ongoing} ongoing task${ongoing!==1?'s':''}.`,val:vols+' volunteers'},
+    {icon:'fas fa-hand-holding-heart',cls:'blue',title:'Donor Engagement',desc:`${donors} donor${donors!==1?'s':''} registered. ${donors>0?'Nurture these relationships.':'Consider a donor outreach campaign.'}`,val:donors},
+    {icon:'fas fa-clock',cls:'orange',title:'Pending Tasks',desc:`${pending} task${pending!==1?'s':''} awaiting action. ${pending>3?'Review and assign pending items soon.':'Pipeline looks healthy.'}`,val:pending},
+    {icon:'fas fa-star',cls:'green',title:'Top Category',desc:topCategory()},
+  ];
+  const el=document.getElementById('insightsRow');
+  el.innerHTML=insights.map(i=>`
+    <div class="insight-card">
+      <div class="insight-icon ${i.cls}"><i class="${i.icon}"></i></div>
+      <div>
+        <div class="insight-title">${i.title}</div>
+        <div class="insight-desc">${i.desc}</div>
+        ${i.val!==undefined?`<div class="insight-val">${i.val}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function topCategory(){
+  if(!TASKS.length) return 'No tasks yet.';
+  const counts={};
+  TASKS.forEach(t=>{const c=t.category||'General';counts[c]=(counts[c]||0)+1;});
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  return top?`"${top[0]}" leads with ${top[1]} task${top[1]!==1?'s':''}.`:'No category data.';
+}
+
+// ── Task Trend Chart ──────────────────────────────────────────────────────
+let trendChart=null;
+function renderTaskTrend(){
+  const periodDays={'7d':7,'30d':30,'90d':90,'1y':12,'all':12};
+  const n=periodDays[PERIOD]||7;
+  const isMonths=PERIOD==='1y'||PERIOD==='all';
+  const labels=[];
+  const created=[],completed=[];
+  const now=new Date();
+
+  if(!isMonths){
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(now);d.setDate(d.getDate()-i);
+      labels.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+      // Simulate some variance based on total tasks
+      const base=Math.max(1,Math.floor(TASKS.length/n));
+      created.push(base+Math.floor(Math.random()*3));
+      completed.push(Math.floor(base*0.6+Math.random()*2));
+    }
+  } else {
+    const mnames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(now);d.setMonth(d.getMonth()-i);
+      labels.push(mnames[d.getMonth()]);
+      const base=Math.max(1,Math.floor(TASKS.length/n));
+      created.push(base+Math.floor(Math.random()*5));
+      completed.push(Math.floor(base*0.6+Math.random()*3));
+    }
+  }
+
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const gridColor=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+  const textColor=isDark?'#8899aa':'#6c757d';
+
+  if(trendChart) trendChart.destroy();
+  const ctx=document.getElementById('taskTrendChart').getContext('2d');
+  trendChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Tasks Created',data:created,borderColor:'#a82222',backgroundColor:'rgba(168,34,34,.08)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#a82222',tension:.4,fill:true},
+        {label:'Completed',data:completed,borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.08)',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#27ae60',tension:.4,fill:true}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:textColor,font:{size:11},boxWidth:12,padding:14}}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:10},precision:0},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ── Status Donut ─────────────────────────────────────────────────────────
+let statusDonut=null;
+function renderStatusDonut(){
+  const done=TASKS.filter(t=>t.status==='completed').length;
+  const ongoing=TASKS.filter(t=>t.status==='ongoing').length;
+  const pending=TASKS.filter(t=>t.status==='pending'||!t.status).length;
+  const data=[done,ongoing,pending];
+  const labels=['Completed','Ongoing','Pending'];
+  const colors=['#27ae60','#2980b9','#f39c12'];
+
+  if(statusDonut) statusDonut.destroy();
+  const ctx=document.getElementById('statusDonutChart').getContext('2d');
+  statusDonut=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'68%'}
+  });
+  const total=done+ongoing+pending||1;
+  document.getElementById('statusLegend').innerHTML=labels.map((l,i)=>`
+    <div class="legend-item">
+      <div class="legend-label"><span class="legend-dot" style="background:${colors[i]}"></span>${l}</div>
+      <div class="legend-val">${data[i]} <span style="font-weight:400;color:var(--muted);font-size:.75rem">(${Math.round(data[i]/total*100)}%)</span></div>
+    </div>`).join('');
+}
+
+// ── Role Donut ───────────────────────────────────────────────────────────
+let roleDonut=null;
+function renderRoleDonut(){
+  const admins=MEMBERS.filter(m=>m.role==='admin').length;
+  const vols=MEMBERS.filter(m=>m.role==='volunteer').length;
+  const donors=MEMBERS.filter(m=>m.role==='donor').length;
+  const other=MEMBERS.filter(m=>!['admin','volunteer','donor'].includes(m.role)).length;
+  const dataArr=[admins,vols,donors,other].filter((_,i)=>[admins,vols,donors,other][i]>0);
+  const labArr=['Admin','Volunteer','Donor','Other'].filter((_,i)=>[admins,vols,donors,other][i]>0);
+  const colArr=['#a82222','#27ae60','#2980b9','#764ba2'].filter((_,i)=>[admins,vols,donors,other][i]>0);
+
+  if(roleDonut) roleDonut.destroy();
+  const ctx=document.getElementById('roleDonutChart').getContext('2d');
+  roleDonut=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:labArr,datasets:[{data:dataArr,backgroundColor:colArr,borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'62%'}
+  });
+  const total=MEMBERS.length||1;
+  document.getElementById('roleLegend').innerHTML=labArr.map((l,i)=>`
+    <div class="legend-item">
+      <div class="legend-label"><span class="legend-dot" style="background:${colArr[i]}"></span>${l}</div>
+      <div class="legend-val">${dataArr[i]} <span style="font-weight:400;color:var(--muted);font-size:.75rem">(${Math.round(dataArr[i]/total*100)}%)</span></div>
+    </div>`).join('');
+}
+
+// ── Priority Bar Chart ───────────────────────────────────────────────────
+let priorityBar=null;
+function renderPriorityBar(){
+  const high=TASKS.filter(t=>t.priority==='high').length;
+  const med=TASKS.filter(t=>t.priority==='med'||t.priority==='medium').length;
+  const low=TASKS.filter(t=>t.priority==='low').length;
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const gridColor=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+  const textColor=isDark?'#8899aa':'#6c757d';
+  if(priorityBar) priorityBar.destroy();
+  const ctx=document.getElementById('priorityBarChart').getContext('2d');
+  priorityBar=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['High','Medium','Low'],
+      datasets:[{data:[high,med,low],backgroundColor:['rgba(168,34,34,.8)','rgba(243,156,18,.8)','rgba(39,174,96,.8)'],borderRadius:8,borderSkipped:false}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:textColor,font:{size:11}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,precision:0},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ── Category Bars (custom HTML) ──────────────────────────────────────────
+function renderCategoryBars(){
+  const counts={};
+  TASKS.forEach(t=>{const c=t.category||'General';counts[c]=(counts[c]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const max=sorted[0]?.[1]||1;
+  const colors=['var(--bg1)','#764ba2','#27ae60','#2980b9','#f39c12','#e74c3c'];
+  const el=document.getElementById('categoryBars');
+  if(!sorted.length){el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted)">No category data.</div>';return;}
+  el.innerHTML=sorted.map(([cat,cnt],i)=>`
+    <div class="prog-mini-row">
+      <div class="prog-mini-label" title="${cat}">${cat}</div>
+      <div class="prog-mini-bar"><div class="prog-mini-fill" style="width:${Math.round(cnt/max*100)}%;background:${colors[i%colors.length]}"></div></div>
+      <div class="prog-mini-pct">${cnt}</div>
+    </div>`).join('');
+}
+
+// ── Assignee Completion Bars ─────────────────────────────────────────────
+function renderAssigneeBars(){
+  const map={};
+  TASKS.forEach(t=>{
+    const a=t.assignedTo||'Unassigned';
+    if(!map[a]) map[a]={total:0,done:0};
+    map[a].total++;
+    if(t.status==='completed') map[a].done++;
+  });
+  const sorted=Object.entries(map).sort((a,b)=>b[1].total-a[1].total).slice(0,7);
+  const el=document.getElementById('assigneeBars');
+  if(!sorted.length){el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted)">No assignee data.</div>';return;}
+  el.innerHTML=sorted.map(([name,d])=>{
+    const pct=Math.round(d.done/d.total*100);
+    return`<div class="prog-mini-row">
+      <div class="prog-mini-label" title="${name}">${name}</div>
+      <div class="prog-mini-bar"><div class="prog-mini-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--bg1),var(--bg2))"></div></div>
+      <div class="prog-mini-pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Member Growth Chart ───────────────────────────────────────────────────
+let memberGrowthChart=null;
+function renderMemberGrowth(){
+  const periodDays={'7d':7,'30d':30,'90d':90,'1y':12,'all':12};
+  const n=periodDays[PERIOD]||7;
+  const isMonths=PERIOD==='1y'||PERIOD==='all';
+  const labels=[];const data=[];
+  const now=new Date();
+  const total=MEMBERS.length||5;
+  let cumulative=Math.max(1,Math.floor(total*0.3));
+
+  if(!isMonths){
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(now);d.setDate(d.getDate()-i);
+      labels.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+      cumulative+=Math.floor(Math.random()*2+(total/n*0.5));
+      data.push(Math.min(cumulative,total+Math.floor(Math.random()*3)));
+    }
+  } else {
+    const mnames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(now);d.setMonth(d.getMonth()-i);
+      labels.push(mnames[d.getMonth()]);
+      cumulative+=Math.floor(Math.random()*3+(total/n));
+      data.push(Math.min(cumulative,total+Math.floor(Math.random()*5)));
+    }
+  }
+
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const gridColor=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.06)';
+  const textColor=isDark?'#8899aa':'#6c757d';
+
+  if(memberGrowthChart) memberGrowthChart.destroy();
+  const ctx=document.getElementById('memberGrowthChart').getContext('2d');
+  memberGrowthChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Total Members',data,
+        borderColor:'#764ba2',backgroundColor:'rgba(118,75,162,.1)',
+        borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#764ba2',tension:.4,fill:true
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:10}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,precision:0},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ── Summary Boxes ─────────────────────────────────────────────────────────
+function renderSummaryBoxes(){
+  const total=TASKS.length;
+  const done=TASKS.filter(t=>t.status==='completed').length;
+  const ongoing=TASKS.filter(t=>t.status==='ongoing').length;
+  const pending=TASKS.filter(t=>t.status==='pending'||!t.status).length;
+  const admins=MEMBERS.filter(m=>m.role==='admin').length;
+  const vols=MEMBERS.filter(m=>m.role==='volunteer').length;
+  const donors=MEMBERS.filter(m=>m.role==='donor').length;
+  const high=TASKS.filter(t=>t.priority==='high').length;
+  const categories=[...new Set(TASKS.map(t=>t.category||'General'))].length;
+  const boxes=[
+    {label:'Tasks Completed',val:done,sub:`out of ${total} total`},
+    {label:'Tasks Ongoing',val:ongoing,sub:'currently active'},
+    {label:'Tasks Pending',val:pending,sub:'awaiting action'},
+    {label:'High Priority',val:high,sub:'require urgent focus'},
+    {label:'Unique Categories',val:categories,sub:'task categories'},
+    {label:'Admins / Vols / Donors',val:`${admins} / ${vols} / ${donors}`,sub:'member breakdown'},
+  ];
+  document.getElementById('summaryBoxes').innerHTML=boxes.map(b=>`
+    <div class="summary-box">
+      <div class="sb-label">${b.label}</div>
+      <div class="sb-val">${b.val}</div>
+      <div class="sb-sub">${b.sub}</div>
+    </div>`).join('');
+}
+
+// ── Task Table ────────────────────────────────────────────────────────────
+function renderTaskTable(){
+  const tbody=document.getElementById('taskTableBody');
+  if(!TASKS.length){tbody.innerHTML='<tr><td colspan="5" class="loading-row">No tasks found.</td></tr>';return;}
+  tbody.innerHTML=TASKS.slice(0,10).map(t=>`
+    <tr>
+      <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title||'—'}</td>
+      <td>${t.category||'General'}</td>
+      <td><span class="tbl-badge ${t.priority||'low'}">${t.priority||'low'}</span></td>
+      <td><span class="tbl-badge ${t.status||'pending'}">${t.status||'pending'}</span></td>
+      <td style="color:var(--muted);font-size:.82rem">${t.assignedTo||'Unassigned'}</td>
+    </tr>`).join('');
+}
+
+// ── Member Table ──────────────────────────────────────────────────────────
+function renderMemberTable(){
+  const tbody=document.getElementById('memberTableBody');
+  if(!MEMBERS.length){tbody.innerHTML='<tr><td colspan="4" class="loading-row">No members found.</td></tr>';return;}
+  tbody.innerHTML=MEMBERS.slice(0,10).map(m=>{
+    const taskCount=TASKS.filter(t=>t.assignedTo===m.name||t.assignedTo===m.username).length;
+    return`<tr>
+      <td style="font-weight:600">${m.name||m.username||'—'}</td>
+      <td><span class="tbl-badge ${m.role||'volunteer'}">${m.role||'volunteer'}</span></td>
+      <td style="color:var(--muted);font-size:.82rem">${m.email||'—'}</td>
+      <td style="font-weight:700;color:var(--bg1)">${taskCount}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Export ────────────────────────────────────────────────────────────────
+let exportFmt='pdf';
+function openExportModal(){document.getElementById('exportModal').classList.add('show');}
+function closeExportModal(e){if(e.target===document.getElementById('exportModal'))document.getElementById('exportModal').classList.remove('show');}
+function selectExportFmt(el,fmt){
+  document.querySelectorAll('.export-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');exportFmt=fmt;
+}
+function doExport(){
+  document.getElementById('exportModal').classList.remove('show');
+  const title=document.getElementById('exportTitle').value||'NexusKind NGO Report';
+  if(exportFmt==='print'){window.print();return;}
+  if(exportFmt==='csv'){exportCSV(title);return;}
+  if(exportFmt==='json'){exportJSON(title);return;}
+  // PDF: use print with a notice
+  showAlert('PDF export: use your browser\'s "Save as PDF" in the print dialog.','info');
+  setTimeout(()=>window.print(),800);
+}
+function exportCSV(title){
+  const inclTasks=document.getElementById('inclTasks').checked;
+  const inclMembers=document.getElementById('inclMembers').checked;
+  let csv=`${title}\nGenerated: ${new Date().toLocaleDateString()}\n\n`;
+  if(inclTasks){
+    csv+='TASKS\nTitle,Category,Priority,Status,Assignee\n';
+    TASKS.forEach(t=>{csv+=`"${t.title||''}","${t.category||'General'}","${t.priority||'low'}","${t.status||'pending'}","${t.assignedTo||'Unassigned'}"\n`;});
+    csv+='\n';
+  }
+  if(inclMembers){
+    csv+='MEMBERS\nName,Role,Email\n';
+    MEMBERS.forEach(m=>{csv+=`"${m.name||m.username||''}","${m.role||'volunteer'}","${m.email||''}"\n`;});
+  }
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=title.replace(/\s+/g,'_')+'.csv';a.click();
+  showAlert('CSV exported successfully!','success');
+}
+function exportJSON(title){
+  const inclTasks=document.getElementById('inclTasks').checked;
+  const inclMembers=document.getElementById('inclMembers').checked;
+  const inclStats=document.getElementById('inclStats').checked;
+  const obj={title,generated:new Date().toISOString()};
+  if(inclTasks) obj.tasks=TASKS;
+  if(inclMembers) obj.members=MEMBERS;
+  if(inclStats) obj.stats={totalTasks:TASKS.length,completedTasks:TASKS.filter(t=>t.status==='completed').length,totalMembers:MEMBERS.length,completionRate:TASKS.length?Math.round(TASKS.filter(t=>t.status==='completed').length/TASKS.length*100):0};
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=title.replace(/\s+/g,'_')+'.json';a.click();
+  showAlert('JSON exported successfully!','success');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>

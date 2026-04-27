@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusKind — Members</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg1:#a82222;--bg2:#764ba2;--card:#fff;--text:#212529;--border:#e0e0e0;--muted:#6c757d;--sidebar:#fff;--sidebar-w:260px;--topbar-h:68px;--body-bg:#f4f5f7}
+[data-theme=dark]{--card:#16213e;--text:#eaeaea;--border:#2d3748;--bg1:#c0392b;--bg2:#8e44ad;--sidebar:#0f1f3d;--body-bg:#0a0f1e;--muted:#8899aa}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .3s,color .3s,border-color .3s}
+body{font-family:'Segoe UI',sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.07);transition:transform .3s}
+.sidebar-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem}
+.sidebar-logo .logo-icon{font-size:1.8rem;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo h2{font-size:1.25rem;font-weight:800;color:var(--text)}
+.sidebar-logo p{font-size:.68rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sidebar-nav{flex:1;padding:1.2rem 0;overflow-y:auto}
+.nav-section{padding:.4rem 1.5rem .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.5rem;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;border-left:3px solid transparent;transition:all .2s;cursor:pointer}
+.nav-item:hover{background:rgba(168,34,34,.06);color:var(--bg1);border-left-color:rgba(168,34,34,.3)}
+.nav-item.active{background:linear-gradient(90deg,rgba(168,34,34,.12),rgba(118,75,162,.06));color:var(--bg1);border-left-color:var(--bg1)}
+.nav-item i{width:20px;text-align:center;font-size:1rem}
+.sidebar-bottom{padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.ngo-profile-mini{display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:12px;cursor:pointer;transition:background .2s}
+.ngo-profile-mini:hover{background:rgba(168,34,34,.06)}
+.ngo-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem;flex-shrink:0}
+.ngo-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.ngo-role{font-size:.72rem;color:var(--muted)}
+
+/* Topbar */
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:1rem;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.topbar-left{flex:1;display:flex;align-items:center;gap:1rem}
+.page-title{font-size:1.2rem;font-weight:800;color:var(--text)}
+.page-subtitle{font-size:.8rem;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem;text-decoration:none}
+.icon-btn:hover{border-color:var(--bg1);color:var(--bg1)}
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2rem;min-height:calc(100vh - var(--topbar-h))}
+
+/* Role section headers */
+.role-section{margin-bottom:2rem}
+.role-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:.75rem;border-bottom:2px solid var(--border)}
+.role-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.role-icon.admin{background:linear-gradient(135deg,var(--bg1),#c0392b);color:#fff}
+.role-icon.volunteer{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff}
+.role-icon.donor{background:linear-gradient(135deg,#2980b9,#3498db);color:#fff}
+.role-title{font-size:1.05rem;font-weight:800;color:var(--text)}
+.role-count{font-size:.75rem;color:var(--muted);font-weight:600}
+.role-badge-pill{font-size:.72rem;font-weight:700;padding:.25rem .75rem;border-radius:20px;margin-left:auto}
+.role-badge-pill.admin{background:rgba(168,34,34,.1);color:var(--bg1)}
+.role-badge-pill.volunteer{background:rgba(39,174,96,.1);color:#27ae60}
+.role-badge-pill.donor{background:rgba(41,128,185,.1);color:#2980b9}
+
+/* Members Grid */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.member-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .25s;cursor:pointer}
+.member-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.1);border-color:var(--bg1)}
+.mc-top{padding:1.3rem 1.3rem .8rem;display:flex;align-items:flex-start;gap:.85rem}
+.mc-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.mc-avatar.admin{background:linear-gradient(135deg,var(--bg1),#c0392b)}
+.mc-avatar.volunteer{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.mc-avatar.donor{background:linear-gradient(135deg,#2980b9,#3498db)}
+.mc-name{font-size:.97rem;font-weight:700;color:var(--text);line-height:1.2}
+.mc-username{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+.mc-role-badge{font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;margin-left:auto;flex-shrink:0}
+.mc-role-badge.admin{background:rgba(168,34,34,.1);color:var(--bg1)}
+.mc-role-badge.volunteer{background:rgba(39,174,96,.1);color:#27ae60}
+.mc-role-badge.donor{background:rgba(41,128,185,.1);color:#2980b9}
+.mc-divider{height:1px;background:var(--border);margin:0 1.3rem}
+.mc-bottom{padding:.8rem 1.3rem;display:flex;flex-direction:column;gap:.35rem}
+.mc-field{display:flex;align-items:center;gap:.55rem;font-size:.8rem;color:var(--muted)}
+.mc-field i{width:14px;text-align:center;color:var(--bg1);font-size:.75rem}
+.mc-field span{color:var(--text);font-weight:500}
+.mc-footer{padding:.7rem 1.3rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:rgba(0,0,0,.01)}
+.mc-action{flex:1;padding:.45rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.mc-action:hover{border-color:var(--bg1);color:var(--bg1);background:rgba(168,34,34,.05)}
+.mc-action.danger:hover{border-color:#e74c3c;color:#e74c3c;background:rgba(231,76,60,.05)}
+
+/* Stats bar */
+.members-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem}
+.ms-card{background:var(--card);border-radius:16px;padding:1.3rem;border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:1rem}
+.ms-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ms-icon.admin{background:rgba(168,34,34,.12);color:var(--bg1)}
+.ms-icon.volunteer{background:rgba(39,174,96,.12);color:#27ae60}
+.ms-icon.donor{background:rgba(41,128,185,.12);color:#2980b9}
+.ms-val{font-size:1.8rem;font-weight:800;color:var(--text);line-height:1}
+.ms-label{font-size:.78rem;color:var(--muted);font-weight:500;margin-top:.15rem}
+
+/* Controls */
+.controls-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.55rem 1rem;flex:1;min-width:200px}
+.search-box input{border:none;background:transparent;color:var(--text);font-size:.88rem;outline:none;width:100%}
+.filter-select{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:.85rem;outline:none;cursor:pointer}
+
+/* Empty */
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--muted)}
+.empty-state i{font-size:2.5rem;margin-bottom:.8rem;opacity:.4;display:block}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border-radius:22px;padding:2rem;max-width:480px;width:90%;box-shadow:0 24px 70px rgba(0,0,0,.22);animation:fadeUp .25s ease;max-height:90vh;overflow-y:auto}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.modal-title{font-size:1.05rem;font-weight:800;color:var(--text)}
+.modal-close{border:none;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:rgba(168,34,34,.08);color:var(--bg1)}
+
+.detail-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;margin-top:.9rem}
+.detail-value{font-size:.9rem;color:var(--text);font-weight:500}
+
+.alert-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.2rem;font-size:.88rem;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:99999;animation:slideIn .3s ease;display:none}
+@keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+@media(max-width:900px){.members-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.members-stats{grid-template-columns:1fr};.members-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main,.topbar{margin-left:0}}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+.hamburger{display:none;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text)}
+@media(max-width:768px){.hamburger{display:flex}}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div><h2>NexusKind</h2><p>NGO Portal</p></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-item" href="ngo_dashboard_2.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <div class="nav-section">Operations</div>
+    <a class="nav-item" href="ngo_tasks_2.html"><i class="fas fa-tasks"></i> Tasks</a>
+    <div class="nav-item active"><i class="fas fa-users"></i> Members</div>
+    <div class="nav-item" onclick="toast('Donations module coming soon!','info')"><i class="fas fa-hand-holding-heart"></i> Donations</div>
+    <div class="nav-item" onclick="toast('Reports module coming soon!','info')"><i class="fas fa-chart-bar"></i> Reports</div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" onclick="toast('Profile coming soon!','info')"><i class="fas fa-user-circle"></i> Profile</div>
+    <div class="nav-item" onclick="toast('Settings coming soon!','info')"><i class="fas fa-cog"></i> Settings</div>
+    <div class="nav-item" onclick="logout()" style="color:#c0392b"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="ngo-profile-mini">
+      <div class="ngo-avatar" id="avatarInitials">NK</div>
+      <div><div class="ngo-name" id="ngoDisplayName">My NGO</div><div class="ngo-role">Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- Topbar -->
+<header class="topbar">
+  <button class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="topbar-left">
+    <div>
+      <div class="page-title">Members</div>
+      <div class="page-subtitle">Admins, volunteers, and donors in your organization</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></div>
+    <a class="icon-btn" href="ngo_dashboard_2.html" title="Dashboard"><i class="fas fa-th-large"></i></a>
+    <div class="icon-btn" onclick="toast('Settings coming soon!','info')"><i class="fas fa-cog"></i></div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- Stats bar -->
+  <div class="members-stats">
+    <div class="ms-card">
+      <div class="ms-icon admin"><i class="fas fa-user-shield"></i></div>
+      <div><div class="ms-val" id="cntAdmin">—</div><div class="ms-label">Admins</div></div>
+    </div>
+    <div class="ms-card">
+      <div class="ms-icon volunteer"><i class="fas fa-hands-helping"></i></div>
+      <div><div class="ms-val" id="cntVolunteer">—</div><div class="ms-label">Volunteers</div></div>
+    </div>
+    <div class="ms-card">
+      <div class="ms-icon donor"><i class="fas fa-hand-holding-heart"></i></div>
+      <div><div class="ms-val" id="cntDonor">—</div><div class="ms-label">Donors</div></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search by name, email, location..." oninput="filterMembers()">
+    </div>
+    <select class="filter-select" id="roleFilter" onchange="filterMembers()">
+      <option value="">All Roles</option>
+      <option value="admin">Admins</option>
+      <option value="volunteer">Volunteers</option>
+      <option value="donor">Donors</option>
+    </select>
+    <select class="filter-select" id="sortFilter" onchange="filterMembers()">
+      <option value="name">Sort: Name</option>
+      <option value="joined">Sort: Joined</option>
+      <option value="role">Sort: Role</option>
+    </select>
+  </div>
+
+  <!-- Members by role -->
+  <div id="membersContent">
+    <div style="text-align:center;padding:4rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><div style="margin-top:1rem">Loading members…</div></div>
+  </div>
+</main>
+
+<!-- Member Detail Modal -->
+<div class="modal-overlay" id="memberModal" onclick="closeModalOutside(event,'memberModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-user-circle" style="color:var(--bg1);margin-right:.5rem"></i>Member Profile</div>
+      <button class="modal-close" onclick="closeModal('memberModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="memberDetailContent"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1.2rem">
+      <button onclick="closeModal('memberModal')" style="flex:1;padding:.75rem;border:2px solid var(--border);border-radius:11px;background:transparent;color:var(--text);font-weight:700;cursor:pointer">Close</button>
+      <button id="roleChangeBtn" style="flex:1;padding:.75rem;border:none;border-radius:11px;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;font-weight:700;cursor:pointer">Change Role</button>
+    </div>
+  </div>
+</div>
+
+<div class="alert-toast" id="alertToast"></div>
+
+<script>
+const API_URL='https://nexus-kind-auth-3vdl.onrender.com/api';
+let allMembers=[];
+let viewingMember=null;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(sessionStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeIcon').className='fas fa-sun';}
+  try{const u=JSON.parse(sessionStorage.getItem('user')||'{}');const n=u.organizationName||u.username||'My NGO';document.getElementById('ngoDisplayName').textContent=n;document.getElementById('avatarInitials').textContent=n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}catch(e){}
+  loadMembers();
+});
+
+async function loadMembers(){
+  try{
+    const token=sessionStorage.getItem('token')||'';
+    const res=await fetch(`${API_URL}/members`,{headers:{'Authorization':'Bearer '+token}});
+    if(res.ok)allMembers=await res.json();
+    else allMembers=getMockMembers();
+  }catch(e){allMembers=getMockMembers();}
+  updateStats();
+  renderMembers();
+}
+
+function getMockMembers(){
+  return[
+    {id:1,name:'Priya Sharma',username:'priya_s',role:'admin',email:'priya@nexuskind.org',phone:'+91 98310 12345',location:'Kolkata, WB',joined:'2024-01-10',skills:'Management, Coordination',tasksCompleted:12,donations:null},
+    {id:2,name:'Rajan Das',username:'rajan_d',role:'volunteer',email:'rajan@nexuskind.org',phone:'+91 97420 54321',location:'Howrah, WB',joined:'2024-03-05',skills:'First Aid, Driving',tasksCompleted:7,donations:null},
+    {id:3,name:'Sneha Ghosh',username:'sneha_g',role:'volunteer',email:'sneha@nexuskind.org',phone:'+91 90020 11223',location:'Salt Lake, Kolkata',joined:'2024-04-01',skills:'Teaching, Communication',tasksCompleted:5,donations:null},
+    {id:4,name:'Amit Roy',username:'amit_r',role:'donor',email:'amit@royenterprises.com',phone:'+91 98760 99887',location:'Park Street, Kolkata',joined:'2024-02-14',skills:null,tasksCompleted:0,donations:'₹ 25,000'},
+    {id:5,name:'Monika Sen',username:'monika_s',role:'volunteer',email:'monika@nexuskind.org',phone:'+91 91630 44556',location:'Behala, Kolkata',joined:'2025-01-22',skills:'Cooking, Logistics',tasksCompleted:3,donations:null},
+    {id:6,name:'Debabrata Pal',username:'deba_p',role:'admin',email:'deba@nexuskind.org',phone:'+91 88790 12398',location:'Barrackpore, WB',joined:'2024-01-15',skills:'Administration, Finance',tasksCompleted:9,donations:null},
+    {id:7,name:'Rina Chatterjee',username:'rina_c',role:'donor',email:'rina@chatterjee.in',phone:'+91 77007 23344',location:'Alipore, Kolkata',joined:'2024-06-10',skills:null,tasksCompleted:0,donations:'₹ 10,000'},
+    {id:8,name:'Tanmoy Bose',username:'tanmoy_b',role:'volunteer',email:'tanmoy@nexuskind.org',phone:'+91 93320 88776',location:'Dum Dum, WB',joined:'2025-02-11',skills:'Photography, Social Media',tasksCompleted:2,donations:null},
+    {id:9,name:'Kavitha Nair',username:'kavitha_n',role:'donor',email:'kavitha@nair.co',phone:'+91 80800 77665',location:'New Town, Kolkata',joined:'2024-09-05',skills:null,tasksCompleted:0,donations:'₹ 50,000'},
+  ];
+}
+
+function updateStats(){
+  document.getElementById('cntAdmin').textContent=allMembers.filter(m=>m.role==='admin').length;
+  document.getElementById('cntVolunteer').textContent=allMembers.filter(m=>m.role==='volunteer').length;
+  document.getElementById('cntDonor').textContent=allMembers.filter(m=>m.role==='donor').length;
+}
+
+function filterMembers(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const role=document.getElementById('roleFilter').value;
+  const sort=document.getElementById('sortFilter').value;
+  let filtered=allMembers.filter(m=>{
+    if(role&&m.role!==role)return false;
+    if(q&&!(m.name||'').toLowerCase().includes(q)&&!(m.email||'').toLowerCase().includes(q)&&!(m.location||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  filtered.sort((a,b)=>{
+    if(sort==='name')return(a.name||'').localeCompare(b.name||'');
+    if(sort==='joined')return(b.joined||'').localeCompare(a.joined||'');
+    if(sort==='role')return(a.role||'').localeCompare(b.role||'');
+    return 0;
+  });
+  renderMembers(filtered);
+}
+
+function renderMembers(members=allMembers){
+  const container=document.getElementById('membersContent');
+  if(!members.length){
+    container.innerHTML='<div class="empty-state"><i class="fas fa-users-slash"></i><p>No members match your search.</p></div>';
+    return;
+  }
+  const roles=[
+    {key:'admin',label:'Admins',icon:'fas fa-user-shield'},
+    {key:'volunteer',label:'Volunteers',icon:'fas fa-hands-helping'},
+    {key:'donor',label:'Donors',icon:'fas fa-hand-holding-heart'},
+  ];
+  const roleFilter=document.getElementById('roleFilter').value;
+  const sections=roles.filter(r=>!roleFilter||r.key===roleFilter).map(r=>{
+    const group=members.filter(m=>m.role===r.key);
+    if(!group.length)return'';
+    return`<div class="role-section">
+      <div class="role-header">
+        <div class="role-icon ${r.key}"><i class="${r.icon}"></i></div>
+        <div><div class="role-title">${r.label}</div><div class="role-count">${group.length} member${group.length!==1?'s':''}</div></div>
+        <span class="role-badge-pill ${r.key}">${r.key.charAt(0).toUpperCase()+r.key.slice(1)}</span>
+      </div>
+      <div class="members-grid">${group.map(m=>memberCard(m)).join('')}</div>
+    </div>`;
+  });
+  container.innerHTML=sections.join('');
+}
+
+function memberCard(m){
+  const init=(m.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  return`<div class="member-card" onclick="openDetail(${m.id})">
+    <div class="mc-top">
+      <div class="mc-avatar ${m.role}">${init}</div>
+      <div style="flex:1">
+        <div class="mc-name">${m.name||m.username}</div>
+        <div class="mc-username">@${m.username||m.name?.toLowerCase().replace(' ','_')}</div>
+      </div>
+      <div class="mc-role-badge ${m.role}">${m.role}</div>
+    </div>
+    <div class="mc-divider"></div>
+    <div class="mc-bottom">
+      ${m.email?`<div class="mc-field"><i class="fas fa-envelope"></i><span>${m.email}</span></div>`:''}
+      ${m.location?`<div class="mc-field"><i class="fas fa-map-marker-alt"></i><span>${m.location}</span></div>`:''}
+      ${m.joined?`<div class="mc-field"><i class="fas fa-calendar-alt"></i><span>Joined ${m.joined}</span></div>`:''}
+      ${m.role==='volunteer'&&m.tasksCompleted!=null?`<div class="mc-field"><i class="fas fa-check-circle"></i><span>${m.tasksCompleted} tasks completed</span></div>`:''}
+      ${m.role==='donor'&&m.donations?`<div class="mc-field"><i class="fas fa-rupee-sign"></i><span>Total donated: ${m.donations}</span></div>`:''}
+    </div>
+    <div class="mc-footer" onclick="event.stopPropagation()">
+      <button class="mc-action" onclick="contactMember(${m.id})"><i class="fas fa-envelope"></i> Message</button>
+      <button class="mc-action" onclick="openDetail(${m.id})"><i class="fas fa-eye"></i> View</button>
+      <button class="mc-action danger" onclick="removeMember(${m.id})"><i class="fas fa-user-minus"></i> Remove</button>
+    </div>
+  </div>`;
+}
+
+function openDetail(id){
+  const m=allMembers.find(x=>x.id===id);if(!m)return;
+  viewingMember=m;
+  const init=(m.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const roleColors={admin:'var(--bg1)',volunteer:'#27ae60',donor:'#2980b9'};
+  document.getElementById('memberDetailContent').innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)">
+      <div style="width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,${roleColors[m.role]||'var(--bg1)'},${m.role==='volunteer'?'#2ecc71':m.role==='donor'?'#3498db':'#c0392b'});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.4rem;margin-bottom:.8rem">${init}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--text)">${m.name||m.username}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin:.2rem 0">@${m.username||''}</div>
+      <span class="mc-role-badge ${m.role}" style="margin-top:.4rem;font-size:.78rem;padding:.3rem .85rem;border-radius:20px">${m.role}</span>
+    </div>
+    <div class="detail-label">Contact</div>
+    <div class="detail-value">${m.email||'Not set'}</div>
+    <div class="detail-label">Phone</div>
+    <div class="detail-value">${m.phone||'Not set'}</div>
+    <div class="detail-label">Location</div>
+    <div class="detail-value">${m.location||'Not set'}</div>
+    <div class="detail-label">Member Since</div>
+    <div class="detail-value">${m.joined||'Not set'}</div>
+    ${m.skills?`<div class="detail-label">Skills</div><div class="detail-value">${m.skills}</div>`:''}
+    ${m.role==='volunteer'?`<div class="detail-label">Tasks Completed</div><div class="detail-value">${m.tasksCompleted||0}</div>`:''}
+    ${m.role==='donor'&&m.donations?`<div class="detail-label">Total Donations</div><div class="detail-value" style="color:#2980b9;font-weight:700">${m.donations}</div>`:''}
+  `;
+  document.getElementById('roleChangeBtn').onclick=()=>changeRole(id);
+  document.getElementById('memberModal').classList.add('show');
+}
+
+function changeRole(id){
+  const m=allMembers.find(x=>x.id===id);if(!m)return;
+  const cycle={admin:'volunteer',volunteer:'donor',donor:'admin'};
+  const newRole=cycle[m.role]||'volunteer';
+  if(!confirm(`Change ${m.name}'s role from "${m.role}" to "${newRole}"?`))return;
+  m.role=newRole;
+  closeModal('memberModal');
+  updateStats();filterMembers();
+  toast(`${m.name}'s role changed to ${newRole}.`,'success');
+}
+
+function contactMember(id){
+  const m=allMembers.find(x=>x.id===id);
+  if(m?.email)window.open(`mailto:${m.email}`);
+  else toast('No email found for this member.','info');
+}
+
+function removeMember(id){
+  const m=allMembers.find(x=>x.id===id);if(!m)return;
+  if(!confirm(`Remove ${m.name} from the organization?`))return;
+  allMembers=allMembers.filter(x=>x.id!==id);
+  updateStats();filterMembers();
+  toast(`${m.name} removed.`,'info');
+}
+
+// Utilities
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function closeModalOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function toast(msg,type='success'){
+  const el=document.getElementById('alertToast');
+  el.style.color=type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.style.borderColor=type==='success'?'#27ae60':type==='info'?'#2980b9':'#c0392b';
+  el.innerHTML=`<i class="fas fa-${type==='success'?'check-circle':type==='info'?'info-circle':'exclamation-circle'}" style="margin-right:.4rem"></i>${msg}`;
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none',3000);
+}
+function toggleTheme(){const dark=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',dark?'light':'dark');sessionStorage.setItem('theme',dark?'light':'dark');document.getElementById('themeIcon').className=dark?'fas fa-moon':'fas fa-sun';}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function logout(){sessionStorage.clear();window.location.href='login_2.html';}
+</script>
+</body>
+</html>
